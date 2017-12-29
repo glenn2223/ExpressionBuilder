@@ -124,7 +124,7 @@ namespace ExpressionBuilder.WinForms.Controls
 
             var type = _properties[PropertyId].Info.PropertyType;
             var supportedOperations = new OperationHelper()
-                                        .SupportedOperations(type)
+                                        .SupportedOperations(type, _properties[PropertyId].MatchAny)
                                         .Select(o => new {
                                             Id = o.ToString(),
                                             Name = o.GetDescription(Resources.Operations.ResourceManager)
