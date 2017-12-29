@@ -35,9 +35,9 @@ namespace ExpressionBuilder.Helpers
         /// Retrieves a list of <see cref="Operation"></see> supported by a type.
         /// </summary>
         /// <param name="type">Type for which supported operations should be retrieved.</param>
-        /// <param name="Value">When it's <see cref="Type"/> is an array, <see cref="Operation.MatchAny"/> is added</param>
+        /// <param name="AddMatchAny">When true, <see cref="Operation.MatchAny"/> is added</param>
         /// <returns></returns>
-        public List<Operation> SupportedOperations(Type type, object value = null)
+        public List<Operation> SupportedOperations(Type type, bool addMatchAny = false)
         {
             var supportedOperations = ExtractSupportedOperationsFromAttribute(type);
             
@@ -47,7 +47,7 @@ namespace ExpressionBuilder.Helpers
                 supportedOperations.Add(Operation.In);
             }
 
-            if (value != null && value.GetType().IsArray)
+            if (addMatchAny)
             {
                 //The 'MatchAny' operation is supported by all types, as long as it's attribute is true...
                 supportedOperations.Add(Operation.MatchAny);
