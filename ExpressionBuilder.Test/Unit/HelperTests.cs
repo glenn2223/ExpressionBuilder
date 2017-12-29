@@ -85,5 +85,18 @@ namespace ExpressionBuilder.Test.Unit
             var operations = definitions.SupportedOperations(typeof(int?));
             Assert.That(operations, Is.EquivalentTo(nullableOperations));
         }
+
+        [TestCase(TestName = "Get supported operations for value arrays")]
+        public void SupportedOperationsForValueArrays()
+        {
+            var definitions = new OperationHelper();
+            var numberOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
+                                                         Operation.LessThan, Operation.LessThanOrEqualTo, Operation.Between };
+            var matchAnyOperations = new List<Operation> { Operation.MatchAny };
+            matchAnyOperations.AddRange(numberOperations);
+
+            var operations = definitions.SupportedOperations(typeof(int), new int[] { 0, 1});
+            Assert.That(operations, Is.EquivalentTo(matchAnyOperations));
+        }
     }
 }
