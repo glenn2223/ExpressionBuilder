@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace ExpressionBuilder.Attributes
 {
-    internal class AddMatchAnyAttribute : Attribute
+    public class AddMatchAnyAttribute : Attribute
     {
         [DefaultValue(false)]
         public bool AddMatchAny { get; private set; }
