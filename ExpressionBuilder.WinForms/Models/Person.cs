@@ -18,9 +18,9 @@ namespace ExpressionBuilder.WinForms.Models
 		public PersonGender Gender { get; set; }
 		public BirthData Birth { get; set; }
 		public List<Contact> Contacts { get; private set; }
-        public Company Employer { get; set; }
+		public Company Employer { get; set; }
 
-        public Person()
+		public Person()
 		{
 			Contacts = new List<Contact>();
 			Birth = new BirthData();
