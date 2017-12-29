@@ -1,3 +1,7 @@
+/*
+/// Irrelivant:
+/// Now checking if <see cref="ExpressionBuilder.Interfaces.IFilterStatement.Value"/> is an array
+
 using System;
 using System.ComponentModel;
 
@@ -18,3 +22,4 @@ namespace ExpressionBuilder.Attributes
         }
     }
 }
+*/
