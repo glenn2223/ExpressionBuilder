@@ -12,6 +12,7 @@ namespace ExpressionBuilder.Test.Models
 	public class Person
 	{
 		public int Id { get; set; }
+		[AddMatchAny]
 		public string Name { get; set; }
 		public PersonGender Gender { get; set; }
 		public BirthData Birth { get; set; }
