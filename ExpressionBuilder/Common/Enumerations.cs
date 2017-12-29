@@ -146,7 +146,14 @@ namespace ExpressionBuilder.Common
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
         [NumberOfValues(1)]
-        DoesNotContain
+        DoesNotContain,
+
+        /// <summary>
+        /// Targets an object in which the property's value is presented in the provided value (as a list).
+        /// </summary>
+        /// <remarks>Accepts one value array.</remarks>
+        [NumberOfValues(1)]
+        MatchAny
     }
     
     /// <summary>
