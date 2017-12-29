@@ -37,6 +37,7 @@ namespace ExpressionBuilder.Builders
                 { Operation.EndsWith, (member, constant, constant2) => Expression.Call(member, endsWithMethod, constant) },
                 { Operation.Between, (member, constant, constant2) => Between(member, constant, constant2) },
                 { Operation.In, (member, constant, constant2) => Contains(member, constant) },
+                { Operation.MatchAny, (member, constant, constant2) => Contains(constant, member) },
                 { Operation.IsNull, (member, constant, constant2) => Expression.Equal(member, Expression.Constant(null)) },
                 { Operation.IsNotNull, (member, constant, constant2) => Expression.NotEqual(member, Expression.Constant(null)) },
                 { Operation.IsEmpty, (member, constant, constant2) => Expression.Equal(member, Expression.Constant(String.Empty)) },
