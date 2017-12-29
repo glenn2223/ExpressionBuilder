@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AddMatchAnyAttribute.cs" />
     <Compile Include="Attributes\NumberOfValuesAttribute.cs" />
     <Compile Include="Attributes\SupportedOperationsAttribute.cs" />
     <Compile Include="Builders\FilterBuilder.cs" />
