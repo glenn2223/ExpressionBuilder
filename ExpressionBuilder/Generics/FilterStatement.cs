@@ -106,7 +106,7 @@ namespace ExpressionBuilder.Generics
                 return;
             }
             
-            supportedOperations = helper.SupportedOperations(typeof(TPropertyType));
+            supportedOperations = helper.SupportedOperations(typeof(TPropertyType), Value?.GetType().IsArray ?? false);
 
             if (!supportedOperations.Contains(Operation))
             {
