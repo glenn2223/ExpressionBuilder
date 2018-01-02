@@ -197,6 +197,16 @@ namespace ExpressionBuilder.Builders
                 var trimConstantCall = Expression.Call(constant, helper.trimMethod);
                 constant = Expression.Call(trimConstantCall, helper.toLowerMethod);
             }
+            else if (value is IEnumerable<string>)
+            {
+                var newList = new List<string>();
+
+                foreach (var i in ((IEnumerable<string>)value))
+                    newList.Add(i.Trim().ToLower());
+
+                value = newList;
+                constant = Expression.Constant(value);
+            }
 
             return constant;
         }
@@ -216,11 +226,12 @@ namespace ExpressionBuilder.Builders
         }
 
         private Expression EqualsAny(Expression member, Expression expression)
-
         {
-            return Expression.Call(typeof(Enumerable), "Contains", new[] { member.Type }, expression, member);
-        
-	}
+            if (expression is ConstantExpression constant && constant.Value is IEnumerable)
+                return Expression.Call(typeof(Enumerable), "Contains", new[] { member.Type }, expression, member);
+
+            throw new ArgumentException("The value provided is not a valid list");
+        }
 
         private Expression Between(Expression member, Expression constant, Expression constant2)
         {

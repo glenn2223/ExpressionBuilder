@@ -96,7 +96,11 @@ namespace ExpressionBuilder.WinForms
                     break;
                 }
 
-				filter.By(ufilter.PropertyId, ufilter.Operation, ufilter.Value, ufilter.Value2, ufilter.Conector);
+                var value = ufilter.Value;
+                if (ufilter.Operation == Common.Operation.EqualsAny)
+                    value = value.ToString().Split(',').ToList();
+
+                filter.By(ufilter.PropertyId, ufilter.Operation, value, ufilter.Value2, ufilter.Conector);
 			}
 			
 			grid.DataSource = People.Where(filter).ToList();
