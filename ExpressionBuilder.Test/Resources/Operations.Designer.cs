@@ -79,6 +79,15 @@ namespace ExpressionBuilder.Test.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Equals Any (comma separated).
+        /// </summary>
+        internal static string EqualsAny {
+            get {
+                return ResourceManager.GetString("EqualsAny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Equal to.
         /// </summary>
         internal static string EqualTo {

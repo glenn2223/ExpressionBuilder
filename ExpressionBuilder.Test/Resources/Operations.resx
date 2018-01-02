@@ -123,6 +123,9 @@
   <data name="EndsWith" xml:space="preserve">
     <value>Ends with</value>
   </data>
+  <data name="EqualsAny" xml:space="preserve">
+    <value>Equals Any (comma separated)</value>
+  </data>
   <data name="EqualTo" xml:space="preserve">
     <value>Equal to</value>
   </data>
