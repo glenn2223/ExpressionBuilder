@@ -21,7 +21,7 @@ namespace ExpressionBuilder.Resources
         /// </summary>
         public PropertyInfo Info { get; private set; }
         /// <summary>
-        /// Add <see cref="Common.Operation.MatchAny"/> to operation list
+        /// Add <see cref="Common.Operation.EqualsAny"/> to operation list
         /// </summary>
         public bool MatchAny = false;
 

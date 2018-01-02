@@ -13,7 +13,7 @@ namespace ExpressionBuilder.Interfaces
         /// Retrieves a list of <see cref="Operation"></see> supported by a type.
         /// </summary>
         /// <param name="type">Type for which supported operations should be retrieved.</param>
-        /// <param name="addMatchAny">When true, <see cref="Operation.MatchAny"/> is added</param>
+        /// <param name="addMatchAny">When true, <see cref="Operation.EqualsAny"/> is added</param>
         /// <returns></returns>
         List<Operation> SupportedOperations(Type type, bool addMatchAny = false);
         /// <summary>

@@ -35,7 +35,7 @@ namespace ExpressionBuilder.Helpers
         /// Retrieves a list of <see cref="Operation"></see> supported by a type.
         /// </summary>
         /// <param name="type">Type for which supported operations should be retrieved.</param>
-        /// <param name="addMatchAny">When true, <see cref="Operation.MatchAny"/> is added</param>
+        /// <param name="addMatchAny">When true, <see cref="Operation.EqualsAny"/> is added</param>
         /// <returns></returns>
         public List<Operation> SupportedOperations(Type type, bool addMatchAny = false)
         {
@@ -50,7 +50,7 @@ namespace ExpressionBuilder.Helpers
             if (addMatchAny)
             {
                 //The 'MatchAny' operation is supported by all types, as long as it's attribute is true...
-                supportedOperations.Add(Operation.MatchAny);
+                supportedOperations.Add(Operation.EqualsAny);
             }
 
             var underlyingNullableType = Nullable.GetUnderlyingType(type);

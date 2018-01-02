@@ -153,7 +153,7 @@ namespace ExpressionBuilder.Common
         /// </summary>
         /// <remarks>Accepts one value array.</remarks>
         [NumberOfValues(1)]
-        MatchAny
+        EqualsAny
     }
     
     /// <summary>

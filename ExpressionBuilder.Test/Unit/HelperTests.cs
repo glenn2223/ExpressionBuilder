@@ -92,10 +92,10 @@ namespace ExpressionBuilder.Test.Unit
             var definitions = new OperationHelper();
             var numberOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
                                                          Operation.LessThan, Operation.LessThanOrEqualTo, Operation.Between };
-            var matchAnyOperations = new List<Operation> { Operation.MatchAny };
+            var matchAnyOperations = new List<Operation> { Operation.EqualsAny };
             matchAnyOperations.AddRange(numberOperations);
 
-            var operations = definitions.SupportedOperations(typeof(int), new int[] { 0, 1});
+            var operations = definitions.SupportedOperations(typeof(int), true);
             Assert.That(operations, Is.EquivalentTo(matchAnyOperations));
         }
     }

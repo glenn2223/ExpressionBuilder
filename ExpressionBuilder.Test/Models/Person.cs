@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpressionBuilder.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace ExpressionBuilder.Test.Models
