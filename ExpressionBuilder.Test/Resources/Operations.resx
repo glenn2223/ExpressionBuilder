@@ -26,7 +26,7 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
+
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
     
@@ -124,7 +124,7 @@
     <value>Ends with</value>
   </data>
   <data name="EqualsAny" xml:space="preserve">
-    <value>Equals Any (comma separated)</value>
+    <value>Equals any (comma separated)</value>
   </data>
   <data name="EqualTo" xml:space="preserve">
     <value>Equal to</value>

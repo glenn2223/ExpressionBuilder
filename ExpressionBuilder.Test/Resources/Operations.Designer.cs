@@ -11,7 +11,6 @@
 namespace ExpressionBuilder.Test.Resources {
     using System;
     
-    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -79,7 +78,7 @@ namespace ExpressionBuilder.Test.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Equals Any (comma separated).
+        ///   Looks up a localized string similar to Equals any (comma separated).
         /// </summary>
         internal static string EqualsAny {
             get {
