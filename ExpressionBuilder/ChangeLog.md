@@ -22,9 +22,9 @@
   * `Group` replaced with `OpenGroup`
     * Modified `StartGroup()` and added `EndGroup()` to support this
 * Changes to `IFilterStatementConnector`
-  * Added `CloseGroup` here, as this made more sensce for fluent builds
+  * Added `CloseGroup` here, as this made more sense for fluent builds
 * Changes to `IFilterStatement` 
-  * It is now a abstract class (needed to to this to maintain `FilterBuilder`'s hidden status)
+  * It is now an abstract class (needed to do this to maintain `FilterBuilder`'s hidden status)
 * Changes to `FilterStatement` 
   * Added `GetPropertyType` method to correctly fetch the type (used in various places)
   * Added a method to return `ToString()` of each value (used in the `ToString()` methods and in various other places)
@@ -32,13 +32,13 @@
   * _NOTE: May have fixed `TODO:` on line 142_
 * Changes to `FilterBuilder`
   * `Expressions` (dictionary) now only needs 2 expressions passing to it. As we've changed the way values work (allows lists)
-  * Added `GetSafeExpression` method that correctly handles weather the `Value` is a `List` or not
+  * Added `GetSafeExpression` method that correctly handles whether the `Value` is a `List` or not
   * `Between` method is now passed an `(ConstantExpression)Expression((Array)List<Value's>)` which is indexed to be used in the expression
 
 ### Minor Changes (Not Affecting NuGet Package)
 * Made changes to the Form application to all the use of [`Groups`](\#complex-expressions) and `Match Any|All`
 * Revised tests to make them work with the new methods. Also removed some test as they no longer apply
-* Added change log
+* Added changelog
 * Revised README to mention new updates and extra functionality (also added new image to assist the change)
 
 

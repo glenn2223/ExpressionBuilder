@@ -16,7 +16,7 @@ Would this help you in anyway? Well, if your answer is 'yes', you just made my d
 * Added match types. Match a list of values (i.e. A name that contains any of: "John", "Jess") [See reference](#complex-expressions)
 For a full list of changes and previous revisions, see the [Change Log](ExpressionBuilder/ChangeLog.md)
 
-## Suggestions
+## Suggestions & Issues
 Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
 
 # How to use it
