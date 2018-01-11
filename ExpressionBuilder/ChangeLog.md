@@ -12,17 +12,17 @@
  * `IFilterGroup` contains a Group (`List<IFilterStatementOrGroup>`), this can contain either Statements or Groups (Also applies to `FilterGroup`) [Built in XML serialisation]
  * `IFilterStatementOrGroup` is now used instead of FilterStatement, this allows for groups in groups. The `Build` method is used to build the expression
 * Changes to `Filter`
- * Changed `By` method (removing second value). You now create arrays/lists of values (when needed).
-  * Added a method to maintain backward compatibility
-  * Added another method for Enumerables (items need to be declared `AsEnumerable()`) [Not ideal, but the changed `By` statement still does the correct working]
- * Filter's statements are now a list of `IFilterStatementOrGroup`
- * Added `private` `_nest` which keeps track of current position in the `Statements`
- * `ToString()` now writes `List`s correctly (See changes to `FilterStatement`)
- * Adjusted `XML` methods
- * `Group` replaced with `OpenGroup`
-  * Modified `StartGroup()` and added `EndGroup()` to support this
+  * Changed `By` method (removing second value). You now create arrays/lists of values (when needed).
+    * Added a method to maintain backward compatibility
+    * Added another method for Enumerables (items need to be declared `AsEnumerable()`) [Not ideal, but the changed `By` statement still does the correct working]
+  * Filter's statements are now a list of `IFilterStatementOrGroup`
+  * Added `private` `_nest` which keeps track of current position in the `Statements`
+  * `ToString()` now writes `List`s correctly (See changes to `FilterStatement`)
+  * Adjusted `XML` methods
+  * `Group` replaced with `OpenGroup`
+    * Modified `StartGroup()` and added `EndGroup()` to support this
 * Changes to `IFilterStatementConnector`
- * Added `CloseGroup` here, as this made more sensce for fluent builds
+  * Added `CloseGroup` here, as this made more sensce for fluent builds
 * Changes to `IFilterStatement` 
   * It is now a abstract class (needed to to this to maintain `FilterBuilder`'s hidden status)
 * Changes to `FilterStatement` 
@@ -31,9 +31,9 @@
   * Modified and added new `ToString` method to show various types of `Value`'s submitted
   * _NOTE: May have fixed `TODO:` on line 142_
 * Changes to `FilterBuilder`
- * `Expressions` (dictionary) now only needs 2 expressions passing to it. As we've changed the way values work (allows lists)
- * Added `GetSafeExpression` method that correctly handles weather the `Value` is a `List` or not
- * `Between` method is now passed an `(ConstantExpression)Expression((Array)List<Value's>)` which is indexed to be used in the expression
+  * `Expressions` (dictionary) now only needs 2 expressions passing to it. As we've changed the way values work (allows lists)
+  * Added `GetSafeExpression` method that correctly handles weather the `Value` is a `List` or not
+  * `Between` method is now passed an `(ConstantExpression)Expression((Array)List<Value's>)` which is indexed to be used in the expression
 
 ### Minor Changes (Not Affecting NuGet Package)
 * Made changes to the Form application to all the use of [`Groups`](\#complex-expressions) and `Match Any|All`
