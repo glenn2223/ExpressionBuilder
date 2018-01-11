@@ -1,6 +1,8 @@
 # Expression Builder
 In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
 
+Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
+
 ## Features:
 * Ability to reference properties by their names
 * Ability to reference properties from a property
@@ -9,13 +11,12 @@ In short words, this library basically provides you with a simple way to create 
 * Built-in XML serialization
 * Globalization support
 
-## New on version 1.1.2:
-* New operation added: DoesNotContain
-* [Support for complex expressions](/ExpressionBuilder/issues/10) (those that group up statements within parenthesis)
-* Added tests using LINQ to SQL (along with a [bug fix regarding the library usage with LINQ to SQL](/ExpressionBuilder/issues/12))
+## What's New: Version 1.2.0
+* Support for very complex expressions. Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](issues/10))
+* Added match types. Match a list of values (i.e. A name that contains any of: "John", "Jess") [See reference](#complex-expressions)
+For a full list of changes and previous revisions, see the [Change Log](ChangeLog.md)
 
-Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
-
+## Suggestions
 Please, feel free to leave comments and to place issues if you find errors or realize there is any missing feature.
 
 # How to use it
@@ -184,31 +185,56 @@ Any property or operation not mentioned at the resources files will be replaced 
 Complex expressions are handled basically by grouping up filter statements, like in the example below:
 ```CSharp
 var filter = new Filter<Products>();
-filter.By("SupplierID", Operation.EqualTo, 1);
 filter.StartGroup();
-filter.By("CategoryID", Operation.EqualTo, 1, connector: FilterStatementConnector.Or);
-filter.By("CategoryID", Operation.EqualTo, 2);
+filter.StartGroup();
+filter.By("Name", Operation.DoesNotContain, "doe", connector: FilterStatementConnector.Or);
+filter.StartGroup();
+filter.By("Name", Operation.EndsWith, "Doe", connector: FilterStatementConnector.Or);
+filter.By("Name", Operation.StartsWith, "Jo", connector: FilterStatementConnector.And);
+filter.EndGroup();
+filter.EndGroup();
+filter.By("Employer", Operation.IsNull, FilterStatementConnector.And);
+filter.EndGroup();
+filter.By("Birth.Country", Operation.EqualTo, "USA");
 var people = db.Products.Where(filter);
 
 //or using the fluent interface...
 
 var filter = new Filter<Products>();
-filter.By("SupplierID", Operation.EqualTo, 1)
-   .And
-   .Group.By("CategoryID", Operation.EqualTo, 1).Or.By("CategoryID", Operation.EqualTo, 2);
+filter
+    .OpenGroup
+        .OpenGroup
+            .By("Name", Operation.DoesNotContain, "doe")
+            .Or
+            .OpenGroup
+                .By("Name", Operation.EndsWith, "Doe")
+                .Or
+                .By("Name", Operation.StartsWith, "Jo")
+            .CloseGroup
+        .CloseGroup
+        .And
+        .By("Employer", Operation.IsNull)
+    .CloseGroup
+    .And
+    .By("Birth.Country", Operation.EqualTo, "USA");
 var people = db.Products.Where(filter);
 ```
 
-That would produce an expression like this:
+That would produce an expression like this: (Excluding all the `NotNull` checks and `.Trim().ToLower()` functions)
 ```CSharp
 db.Products
-  .Where(p => p.SupplierID == 1 && (p.CategoryID == 1 || p.CategoryID == 2));
+  .Where(p => ( ( !p.Name.Contains("doe") || ( p.Name.EndsWith("Doe") || p.Name.StartsWith("Jo") ) ) && p.Employer == null ) && p.Birth.Country == "USA" );
 ```
 
-Every time you start a group that means all further statements will by at the same "parenthesis". You don't need to close any group as you would do with parenthesis, just start a new group whenever you need the subsequent statements to be "inside a parenthesis".
+Every time you start a group that means all further statements will by at the same "parenthesis" until EndGroup is called.
+You can even add groups to groups! (For those super complex expressions)
+
+The WinForms has been updated to allow tests of groups. Simply right click on a `+` button and choose `Add Group`, this can give you a form like the below:
+
+![FormUI - Group Example](docs/FormGroupBuild.png)
 
 # License
-Copyright 2017 David Belmont
+Copyright 2018 David Belmont
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

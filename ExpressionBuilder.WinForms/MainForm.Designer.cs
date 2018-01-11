@@ -14,7 +14,7 @@ namespace ExpressionBuilder.WinForms
 		/// Designer variable used to keep track of non-visual components.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
-		private System.Windows.Forms.Panel pnFilters;
+		private System.Windows.Forms.FlowLayoutPanel pnFilters;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem executeFilterF5ToolStripMenuItem;
@@ -42,7 +42,7 @@ namespace ExpressionBuilder.WinForms
 		{
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.grid = new System.Windows.Forms.DataGridView();
-            this.pnFilters = new System.Windows.Forms.Panel();
+            this.pnFilters = new System.Windows.Forms.FlowLayoutPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.executeFilterF5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -59,11 +59,11 @@ namespace ExpressionBuilder.WinForms
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.grid);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.pnFilters);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1192, 406);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1234, 427);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1192, 430);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1234, 451);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -75,23 +75,31 @@ namespace ExpressionBuilder.WinForms
             // 
             this.grid.AllowUserToAddRows = false;
             this.grid.AllowUserToDeleteRows = false;
+            this.grid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.grid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grid.Location = new System.Drawing.Point(0, 168);
+            this.grid.Location = new System.Drawing.Point(0, 221);
+            this.grid.MinimumSize = new System.Drawing.Size(884, 206);
             this.grid.Name = "grid";
             this.grid.ReadOnly = true;
-            this.grid.Size = new System.Drawing.Size(1192, 238);
+            this.grid.Size = new System.Drawing.Size(1234, 206);
             this.grid.TabIndex = 2;
             // 
             // pnFilters
             // 
+            this.pnFilters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnFilters.AutoScroll = true;
-            this.pnFilters.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnFilters.Location = new System.Drawing.Point(0, 0);
+            this.pnFilters.BackColor = System.Drawing.Color.Transparent;
+            this.pnFilters.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.pnFilters.Location = new System.Drawing.Point(0, 3);
+            this.pnFilters.MinimumSize = new System.Drawing.Size(884, 197);
             this.pnFilters.Name = "pnFilters";
-            this.pnFilters.Size = new System.Drawing.Size(1192, 168);
+            this.pnFilters.Size = new System.Drawing.Size(1234, 218);
             this.pnFilters.TabIndex = 1;
+            this.pnFilters.WrapContents = false;
             // 
             // menuStrip1
             // 
@@ -100,7 +108,7 @@ namespace ExpressionBuilder.WinForms
             this.executeFilterF5ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1192, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1234, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -116,11 +124,12 @@ namespace ExpressionBuilder.WinForms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1192, 430);
+            this.ClientSize = new System.Drawing.Size(1234, 451);
             this.Controls.Add(this.toolStripContainer1);
             this.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MinimumSize = new System.Drawing.Size(1250, 490);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);

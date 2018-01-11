@@ -18,79 +18,88 @@ namespace ExpressionBuilder.Builders
         readonly MethodInfo startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
         readonly MethodInfo endsWithMethod = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
 
-        public readonly Dictionary<Operation, Func<Expression, Expression, Expression, Expression>> Expressions;
+        public readonly Dictionary<Operation, Func<Expression, Expression, Expression>> Expressions;
 
         internal FilterBuilder(BuilderHelper helper)
 		{
             this.helper = helper;
 
-            Expressions = new Dictionary<Operation, Func<Expression, Expression, Expression, Expression>>
+            Expressions = new Dictionary<Operation, Func<Expression, Expression, Expression>>
             {
-                { Operation.EqualTo, (member, constant, constant2) => Expression.Equal(member, constant) },
-                { Operation.NotEqualTo, (member, constant, constant2) => Expression.NotEqual(member, constant) },
-                { Operation.GreaterThan, (member, constant, constant2) => Expression.GreaterThan(member, constant) },
-                { Operation.GreaterThanOrEqualTo, (member, constant, constant2) => Expression.GreaterThanOrEqual(member, constant) },
-                { Operation.LessThan, (member, constant, constant2) => Expression.LessThan(member, constant) },
-                { Operation.LessThanOrEqualTo, (member, constant, constant2) => Expression.LessThanOrEqual(member, constant) },
-                { Operation.Contains, (member, constant, constant2) => Contains(member, constant) },
-                { Operation.StartsWith, (member, constant, constant2) => Expression.Call(member, startsWithMethod, constant) },
-                { Operation.EndsWith, (member, constant, constant2) => Expression.Call(member, endsWithMethod, constant) },
-                { Operation.Between, (member, constant, constant2) => Between(member, constant, constant2) },
-                { Operation.In, (member, constant, constant2) => Contains(member, constant) },
-                { Operation.EqualsAny, (member, constant, constant2) => EqualsAny(member, constant) },
-                { Operation.IsNull, (member, constant, constant2) => Expression.Equal(member, Expression.Constant(null)) },
-                { Operation.IsNotNull, (member, constant, constant2) => Expression.NotEqual(member, Expression.Constant(null)) },
-                { Operation.IsEmpty, (member, constant, constant2) => Expression.Equal(member, Expression.Constant(String.Empty)) },
-                { Operation.IsNotEmpty, (member, constant, constant2) => Expression.NotEqual(member, Expression.Constant(String.Empty)) },
-                { Operation.IsNullOrWhiteSpace, (member, constant, constant2) => IsNullOrWhiteSpace(member) },
-                { Operation.IsNotNullNorWhiteSpace, (member, constant, constant2) => IsNotNullNorWhiteSpace(member) },
-                { Operation.DoesNotContain, (member, constant, constant2) => Expression.Not(Contains(member, constant)) }
+                { Operation.EqualTo, (member, constant) => Expression.Equal(member, constant) },
+                { Operation.NotEqualTo, (member, constant) => Expression.NotEqual(member, constant) },
+                { Operation.GreaterThan, (member, constant) => Expression.GreaterThan(member, constant) },
+                { Operation.GreaterThanOrEqualTo, (member, constant) => Expression.GreaterThanOrEqual(member, constant) },
+                { Operation.LessThan, (member, constant) => Expression.LessThan(member, constant) },
+                { Operation.LessThanOrEqualTo, (member, constant) => Expression.LessThanOrEqual(member, constant) },
+                { Operation.Contains, (member, constant) => Contains(member, constant) },
+                { Operation.StartsWith, (member, constant) => Expression.Call(member, startsWithMethod, constant) },
+                { Operation.EndsWith, (member, constant) => Expression.Call(member, endsWithMethod, constant) },
+                { Operation.Between, (member, constant) => Between(member, constant) },
+                { Operation.In, (member, constant) => Contains(member, constant) },
+                { Operation.IsNull, (member, constant) => Expression.Equal(member, Expression.Constant(null)) },
+                { Operation.IsNotNull, (member, constant) => Expression.NotEqual(member, Expression.Constant(null)) },
+                { Operation.IsEmpty, (member, constant) => Expression.Equal(member, Expression.Constant(String.Empty)) },
+                { Operation.IsNotEmpty, (member, constant) => Expression.NotEqual(member, Expression.Constant(String.Empty)) },
+                { Operation.IsNullOrWhiteSpace, (member, constant) => IsNullOrWhiteSpace(member) },
+                { Operation.IsNotNullNorWhiteSpace, (member, constant) => IsNotNullNorWhiteSpace(member) },
+                { Operation.DoesNotContain, (member, constant) => Expression.Not(Contains(member, constant)) }
             };
         }
 		
-		public Expression<Func<T, bool>> GetExpression<T>(IFilter filter) where T : class
+        /// <summary>
+        /// Get the expression to use in a lambda method
+        /// </summary>
+        /// <typeparam name="T">The original class to reference</typeparam>
+        /// <param name="filter">The <see cref="IFilter"/> used to build the expression</param>
+        /// <returns></returns>
+		public static Expression<Func<T, bool>> GetExpression<T>(IFilter filter) where T : class
         {
             var param = Expression.Parameter(typeof(T), "x");
             Expression expression = null;
             var connector = FilterStatementConnector.And;
-            foreach (var statementGroup in filter.Statements)
-            {
-                var statementGroupConnector = FilterStatementConnector.And;
-                Expression partialExpr = GetPartialExpression(param, ref statementGroupConnector, statementGroup);
 
-                expression = expression == null ? partialExpr : CombineExpressions(expression, partialExpr, connector);
-                connector = statementGroupConnector;
-            }
-
+            expression = new FilterBuilder(new BuilderHelper()).GetPartialExpression(param, ref connector, filter.Statements);
+            
             expression = expression ?? Expression.Constant(true);
 
             return Expression.Lambda<Func<T, bool>>(expression, param);
         }
 
-        private Expression GetPartialExpression(ParameterExpression param, ref FilterStatementConnector connector, IEnumerable<IFilterStatement> statementGroup)
+        internal Expression GetPartialExpression(ParameterExpression param, ref FilterStatementConnector connector, IEnumerable<IFilterStatementOrGroup> statementGroup)
         {
             Expression expression = null;
-            foreach (var statement in statementGroup)
+            foreach (var statementFilterOrGroup in statementGroup)
             {
-                Expression expr = null;
-                if (IsList(statement))
-                    expr = ProcessListStatement(param, statement);
-                else
-                    expr = GetExpression(param, statement);
+                var statementGroupConnector = FilterStatementConnector.And;
+                Expression partialExpr = statementFilterOrGroup.Build(param, ref statementGroupConnector, this);
 
-                expression = expression == null ? expr : CombineExpressions(expression, expr, connector);
-                connector = statement.Connector;
+                expression = expression == null ? partialExpr : CombineExpressions(expression, partialExpr, connector);
+                connector = statementGroupConnector;
             }
 
             return expression;
         }
 
-        private bool IsList(IFilterStatement statement)
+        internal Expression GetPartialExpression(ParameterExpression param, ref FilterStatementConnector connector, IFilterStatement statement)
+        {
+            Expression expr = null;
+            if (IsList(statement))
+                expr = ProcessListStatement(param, statement);
+            else
+                expr = GetExpression(param, statement);
+
+            connector = statement.Connector;
+
+            return expr;
+        }
+
+        private static bool IsList(IFilterStatement statement)
         {
             return statement.PropertyId.Contains("[") && statement.PropertyId.Contains("]");
         }
 
-        private Expression CombineExpressions(Expression expr1, Expression expr2, FilterStatementConnector connector)
+        internal static Expression CombineExpressions(Expression expr1, Expression expr2, FilterStatementConnector connector)
         {
             return connector == FilterStatementConnector.And ? Expression.AndAlso(expr1, expr2) : Expression.OrElse(expr1, expr2);
         }
@@ -115,8 +124,9 @@ namespace ExpressionBuilder.Builders
             Expression resultExpr = null;
             var memberName = propertyName ?? statement.PropertyId;
             Expression member = helper.GetMemberExpression(param, memberName);
-            Expression constant = GetConstantExpression(member, statement.Value);
-            Expression constant2 = GetConstantExpression(member, statement.Value2);
+            Expression constant;
+            
+            constant = GetConstantExpression(member, statement);
 
             if (Nullable.GetUnderlyingType(member.Type) != null && statement.Value != null)
             {
@@ -124,7 +134,7 @@ namespace ExpressionBuilder.Builders
                 member = Expression.PropertyOrField(member, "Value");
             }
 
-            var safeStringExpression = GetSafeStringExpression(member, statement.Operation, constant, constant2);
+            var safeStringExpression = GetSafeStringExpression(member, statement, constant);
             resultExpr = resultExpr != null ? Expression.AndAlso(resultExpr, safeStringExpression) : safeStringExpression;
             resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
@@ -136,11 +146,13 @@ namespace ExpressionBuilder.Builders
             return resultExpr;
         }
 
-        private Expression GetSafeStringExpression(Expression member, Operation operation, Expression constant, Expression constant2)
+        private Expression GetSafeStringExpression(Expression member, IFilterStatement statement, Expression constant)
         {
+            var operation = statement.Operation;
+
             if (member.Type != typeof(string))
             {
-                return Expressions[operation].Invoke(member, constant, constant2);
+                return GetSafeExpression(member, statement, constant);
             }
 
             Expression newMember = member;
@@ -152,8 +164,8 @@ namespace ExpressionBuilder.Builders
             }
 
             Expression resultExpr = operation != Operation.IsNull ?
-                                    Expressions[operation].Invoke(newMember, constant, constant2) :
-                                    Expressions[operation].Invoke(member, constant, constant2);
+                                    GetSafeExpression(newMember, statement, constant) :
+                                    GetSafeExpression(member, statement, constant);
 
             if (member.Type == typeof(string) && operation != Operation.IsNull)
             {
@@ -166,13 +178,29 @@ namespace ExpressionBuilder.Builders
 
             return resultExpr;
         }
+        
+        private Expression GetSafeExpression(Expression member, IFilterStatement statement, Expression constant)
+        {
+            var operation = statement.Operation;
 
+            if (operation != Operation.Between && constant != null && constant.Type == typeof(List<>).MakeGenericType(statement.GetPropertyType()))
+            {
+                var type = statement.GetPropertyType();
+                ParameterExpression listItemParam = Expression.Parameter(type, "y");
+                var lambda = Expression.Lambda(Expressions[operation].Invoke(member, listItemParam), listItemParam);
+                var enumerableType = typeof(Enumerable);
+                var arraySearchInfo = enumerableType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == statement.MatchType.ToString() && m.GetParameters().Count() == 2);
+                arraySearchInfo = arraySearchInfo.MakeGenericMethod(type);
+                return Expression.Call(arraySearchInfo, constant, lambda);
+            }
+
+            return Expressions[operation].Invoke(member, constant);
+        }
+    
         public Expression GetSafePropertyMember(ParameterExpression param, String memberName, Expression expr)
         {
             if (!memberName.Contains("."))
-            {
                 return expr;
-            }
 
             string parentName = memberName.Substring(0, memberName.IndexOf("."));
             Expression parentMember = helper.GetMemberExpression(param, parentName);
@@ -186,8 +214,10 @@ namespace ExpressionBuilder.Builders
             return Expression.Equal(parentMember, Expression.Constant(null));
         }
 
-        private Expression GetConstantExpression(Expression member, object value)
+        private Expression GetConstantExpression(Expression member, IFilterStatement statement)
         {
+            var value = statement.Value;
+
             if (value == null) return null;
 
             Expression constant = Expression.Constant(value);
@@ -197,15 +227,17 @@ namespace ExpressionBuilder.Builders
                 var trimConstantCall = Expression.Call(constant, helper.trimMethod);
                 constant = Expression.Call(trimConstantCall, helper.toLowerMethod);
             }
-            else if (value is IEnumerable<string>)
+            else if (statement.ValueIsList())
             {
-                var newList = new List<string>();
+                var type = statement.GetPropertyType();
+                var myList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type), value);
 
-                foreach (var i in ((IEnumerable<string>)value))
-                    newList.Add(i.Trim().ToLower());
+                if (type == typeof(string))
+                    for (var itemIndex = 0; itemIndex < myList.Count; itemIndex++)
+                        myList[itemIndex] = (myList[itemIndex] as string)?.Trim().ToLower();
 
-                value = newList;
-                constant = Expression.Constant(value);
+                value = myList;
+                constant = Expression.Constant(statement.Operation == Operation.Between ? new ArrayList(myList).ToArray(type) : value);
             }
 
             return constant;
@@ -225,18 +257,10 @@ namespace ExpressionBuilder.Builders
             return contains ?? Expression.Call(member, stringContainsMethod, expression); ;
         }
 
-        private Expression EqualsAny(Expression member, Expression expression)
+        private Expression Between(Expression member, Expression constantArray)
         {
-            if (expression is ConstantExpression constant && constant.Value is IEnumerable)
-                return Expression.Call(typeof(Enumerable), "Contains", new[] { member.Type }, expression, member);
-
-            throw new ArgumentException("The value provided is not a valid list");
-        }
-
-        private Expression Between(Expression member, Expression constant, Expression constant2)
-        {
-            var left = Expressions[Operation.GreaterThanOrEqualTo].Invoke(member, constant, null);
-            var right = Expressions[Operation.LessThanOrEqualTo].Invoke(member, constant2, null);
+            var left = Expressions[Operation.GreaterThanOrEqualTo].Invoke(member, Expression.ArrayIndex(constantArray, Expression.Constant(0)));
+            var right = Expressions[Operation.LessThanOrEqualTo].Invoke(member, Expression.ArrayIndex(constantArray, Expression.Constant(1)));
 
             return CombineExpressions(left, right, FilterStatementConnector.And);
         }

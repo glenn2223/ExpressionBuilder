@@ -13,5 +13,9 @@
         /// Defines that the last filter statement will connect to the next one using the 'OR' logical operator.
         /// </summary>
         IFilter Or { get; }
-	}
+        /// <summary>
+        /// Closes a previously opened parenthesis.
+        /// </summary>
+        IFilterStatementConnection CloseGroup { get; }
+    }
 }

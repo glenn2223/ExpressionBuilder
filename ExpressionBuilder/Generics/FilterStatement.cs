@@ -1,12 +1,14 @@
-﻿using ExpressionBuilder.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.Xml;
-using System.Xml.Schema;
+﻿using ExpressionBuilder.Builders;
 using ExpressionBuilder.Common;
-using ExpressionBuilder.Helpers;
 using ExpressionBuilder.Exceptions;
+using ExpressionBuilder.Helpers;
+using ExpressionBuilder.Interfaces;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Xml;
 
 namespace ExpressionBuilder.Generics
 {
@@ -17,56 +19,56 @@ namespace ExpressionBuilder.Generics
     public class FilterStatement<TPropertyType> : IFilterStatement
     {
         /// <summary>
-		/// Establishes how this filter statement will connect to the next one. 
-		/// </summary>
-        public FilterStatementConnector Connector { get; set; }
-        /// <summary>
-		/// Property identifier conventionalized by for the Expression Builder.
-		/// </summary>
-        public string PropertyId { get; set; }
-        /// <summary>
-		/// Express the interaction between the property and the constant value defined in this filter statement.
-		/// </summary>
-        public Operation Operation { get; set; }
-        /// <summary>
-		/// Constant value that will interact with the property defined in this filter statement.
-		/// </summary>
-        public object Value { get; set; }
-        /// <summary>
-        /// Constant value that will interact with the property defined in this filter statement when the operation demands a second value to compare to.
+        /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
         /// </summary>
-        public object Value2 { get; set; }
-        
+        /// <param name="propertyId"></param>
+        /// <param name="operation"></param>
+        /// <param name="values"></param>
+        /// <param name="matchType"></param>
+        /// <param name="connector"></param>
+		public FilterStatement(string propertyId, Operation operation, IEnumerable<TPropertyType> values, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
+        {
+            var constructedListType = typeof(List<>).MakeGenericType(values.FirstOrDefault()?.GetType() ?? typeof(TPropertyType));
+
+            PropertyId = propertyId;
+            Connector = connector;
+            Operation = operation;
+            Value = values != null ? Activator.CreateInstance(constructedListType, values) : null;
+            MatchType = matchType;
+
+            Validate();
+        }
+
         /// <summary>
         /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
         /// </summary>
         /// <param name="propertyId"></param>
         /// <param name="operation"></param>
         /// <param name="value"></param>
-        /// <param name="value2"></param>
+        /// <param name="matchType"></param>
         /// <param name="connector"></param>
-		public FilterStatement(string propertyId, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
+        public FilterStatement(string propertyId, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
 		{
-			PropertyId = propertyId;
+            PropertyId = propertyId;
 			Connector = connector;
 			Operation = operation;
-			if (typeof(TPropertyType).IsArray)
-			{
-				if (operation != Operation.Contains && operation != Operation.In) throw new ArgumentException("Only 'Operacao.Contains' and 'Operacao.In' support arrays as parameters.");
+            MatchType = matchType;
 
-				var listType = typeof(List<>);
-                var constructedListType = listType.MakeGenericType(typeof(TPropertyType).GetElementType());
+            var type = value?.GetType() ?? typeof(TPropertyType);
+            var underlyingType = type.IsArray ? type.GetElementType() : type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type) ? type.GenericTypeArguments[0] : type;
+
+            if (type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type))
+            {
+                var constructedListType = typeof(List<>).MakeGenericType(underlyingType);
                 Value = value != null ? Activator.CreateInstance(constructedListType, value) : null;
-                Value2 = value2 != null ? Activator.CreateInstance(constructedListType, value2) : null;
             }
-			else
+            else
 			{
 				Value = value;
-                Value2 = value2;
 			}
 
             Validate();
-		}
+        }
 
         /// <summary>
         /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
@@ -76,7 +78,7 @@ namespace ExpressionBuilder.Generics
         /// <summary>
         /// Validates the FilterStatement regarding the number of provided values and supported operations.
         /// </summary>
-        public void Validate()
+        public override void Validate()
         {
             var helper = new OperationHelper();            
             ValidateNumberOfValues(helper);
@@ -85,20 +87,57 @@ namespace ExpressionBuilder.Generics
 
         private void ValidateNumberOfValues(OperationHelper helper)
         {
-            var numberOfValues = helper.NumberOfValuesAcceptable(Operation);
-            var failsForSingleValue = numberOfValues == 1 && Value2 != null && !Value2.Equals(default(TPropertyType));
-            var failsForNoValueAtAll = numberOfValues == 0 && Value != null && Value2 != null && (!Value.Equals(default(TPropertyType)) || !Value2.Equals(default(TPropertyType)));
+            var numberOfValues = helper.NumberOfValuesAcceptable(Operation, MatchType);
 
-            if (failsForSingleValue || failsForNoValueAtAll)
+            if (numberOfValues != -1 && CountValues() != numberOfValues)
             {
                 throw new WrongNumberOfValuesException(Operation);
             }
         }
 
+        private int CountValues()
+        {
+            IEnumerable<string> valueList;
+
+            if (Value == null)
+                return 0;
+
+            else if (ValueIsList(out valueList))
+                return valueList.Count();
+
+            return 1;
+        }
+
+        internal override bool ValueIsList()
+        {
+            return Value?.GetType() == typeof(List<>).MakeGenericType(GetPropertyType());
+        }
+
+        private bool ValueIsList(out IEnumerable<string> ListToString)
+        {
+            ListToString = null;
+            if (ValueIsList())
+            {
+                List<string> stringList = new List<string>();
+                foreach (var x in Value as IEnumerable)
+                    stringList.Add(x?.ToString() ?? "NULL");
+                ListToString = stringList;
+                return true;
+            }
+            else
+                return false;
+        }
+
+        internal override Type GetPropertyType()
+        {
+            var t = Value?.GetType() ?? typeof(TPropertyType);
+            return t.IsArray ? t.GetElementType() : t != typeof(string) && typeof(IEnumerable).IsAssignableFrom(t) ? t.GenericTypeArguments[0] : t;
+        }
+
         private void ValidateSupportedOperations(OperationHelper helper)
         {
             List<Operation> supportedOperations = null;
-            if (typeof(TPropertyType) == typeof(object))
+            if (GetPropertyType() == typeof(object))
             {
                 //TODO: Issue regarding the TPropertyType that comes from the UI always as 'Object'
                 //supportedOperations = helper.GetSupportedOperations(Value.GetType());
@@ -106,12 +145,24 @@ namespace ExpressionBuilder.Generics
                 return;
             }
             
-            supportedOperations = helper.SupportedOperations(typeof(TPropertyType), Value?.GetType().IsArray ?? false);
+            supportedOperations = helper.SupportedOperations(GetPropertyType());
 
             if (!supportedOperations.Contains(Operation))
             {
-                throw new UnsupportedOperationException(Operation, typeof(TPropertyType).Name);
+                throw new UnsupportedOperationException(Operation, GetPropertyType().Name);
             }
+        }
+
+        /// <summary>
+        /// Builds the <see cref="Expression"/>
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="connector"></param>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        internal override Expression Build(ParameterExpression param, ref FilterStatementConnector connector, FilterBuilder builder)
+        {
+            return builder.GetPartialExpression(param, ref connector, this);
         }
 
         /// <summary>
@@ -120,62 +171,114 @@ namespace ExpressionBuilder.Generics
         /// <returns></returns>
 		public override string ToString()
         {
+            var value = Value;
+            IEnumerable<string> valueList;
+            if (ValueIsList(out valueList))
+            {
+                if (Operation == Operation.Between)
+                    value = string.Join(" AND ", valueList);
+                else
+                    value = MatchType + " ( \"" + string.Join("\", \"", valueList) + "\" )";
+            }
+
             var operationHelper = new OperationHelper();
 
-            switch (operationHelper.NumberOfValuesAcceptable(Operation))
+            switch (operationHelper.NumberOfValuesAcceptable(Operation, MatchType))
             {
                 case 0:
                     return string.Format("{0} {1}", PropertyId, Operation);
-                case 2:
-                    return string.Format("{0} {1} {2} And {3}", PropertyId, Operation, Value, Value2);
                 default:
-                    return string.Format("{0} {1} {2}", PropertyId, Operation, Value);
+                    return string.Format("{0} {1} {2}", PropertyId, Operation, value);
             }
         }
 
         /// <summary>
-        /// 
+        /// String representation of <see cref="FilterStatement{TPropertyType}" />.
         /// </summary>
         /// <returns></returns>
-        public XmlSchema GetSchema()
+		public override string ToString(ref FilterStatementConnector LastConnector)
         {
-            return null;
+            LastConnector = Connector;
+
+            return ToString();
         }
 
         /// <summary>
         ///  Generates an object from its XML representation.
         /// </summary>
         /// <param name="reader">The System.Xml.XmlReader stream from which the object is deserialized.</param>
-        public void ReadXml(XmlReader reader)
+        public override void ReadXml(XmlReader reader)
         {
+            var type = GetPropertyType();
+
             reader.Read();
             PropertyId = reader.ReadElementContentAsString();
             Operation = (Operation)Enum.Parse(typeof(Operation), reader.ReadElementContentAsString());
-            if (typeof(TPropertyType).IsEnum)
+            if (reader.IsStartElement("Values"))
             {
-                Value = Enum.Parse(typeof(TPropertyType), reader.ReadElementContentAsString());
+                reader.Read();
+
+                var valueList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+
+                while (reader.NodeType != XmlNodeType.EndElement && reader.Name != "Values")
+                    valueList.Add(Convert.ChangeType(reader.ReadElementContentAsString(), type));
+
+                Value = valueList;
+
+                reader.ReadEndElement();
             }
             else
             {
-                Value = Convert.ChangeType(reader.ReadElementContentAsString(), typeof(TPropertyType));
+                if (type.IsEnum)
+                {
+                    Value = Enum.Parse(type, reader.ReadElementContentAsString());
+                }
+                else
+                {
+                    if (reader.IsEmptyElement && reader.GetAttribute("NULLED") == true.ToString())
+                    {
+                        Value = null;
+                        reader.Read();
+                    }
+                    else
+                        Value = Convert.ChangeType(reader.ReadElementContentAsString(), type);
+                }
             }
-
             Connector = (FilterStatementConnector)Enum.Parse(typeof(FilterStatementConnector), reader.ReadElementContentAsString());
+            MatchType = (FilterStatementMatchType)Enum.Parse(typeof(FilterStatementMatchType), reader.ReadElementContentAsString());
         }
 
         /// <summary>
         /// Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The System.Xml.XmlWriter stream to which the object is serialized.</param>
-        public void WriteXml(XmlWriter writer)
+        public override void WriteXml(XmlWriter writer)
         {
-            var type = Value.GetType();
-            var serializer = new XmlSerializer(type);
-            writer.WriteAttributeString("Type", type.AssemblyQualifiedName);
+            IEnumerable<string> valueList;
+            
+            writer.WriteAttributeString("Type", (Value?.GetType() ?? typeof(TPropertyType)).AssemblyQualifiedName);
             writer.WriteElementString("PropertyId", PropertyId);
             writer.WriteElementString("Operation", Operation.ToString("d"));
-            writer.WriteElementString("Value", Value.ToString());
+            if (Value != null)
+            {
+                if (ValueIsList(out valueList))
+                {
+                    writer.WriteStartElement("Values");
+                    valueList.ToList().ForEach(x => writer.WriteElementString("Value", x));
+                    writer.WriteEndElement();
+
+                }
+                else
+                    writer.WriteElementString("Value", Value.ToString());
+            }
+            else
+            {
+                writer.WriteStartElement("Value");
+                writer.WriteAttributeString("NULLED", true.ToString());
+                writer.WriteEndElement();
+            }
             writer.WriteElementString("Connector", Connector.ToString("d"));
+            writer.WriteElementString("Matchtype", MatchType.ToString("d"));
         }
     }
 }

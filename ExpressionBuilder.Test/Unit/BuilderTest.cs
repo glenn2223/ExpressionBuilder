@@ -83,7 +83,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithPropertyChainFilterStatements()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Birth.Country", Operation.EqualTo, "usa", default(string), FilterStatementConnector.Or);
+        	filter.By("Birth.Country", Operation.EqualTo, "usa", FilterStatementConnector.Or);
         	filter.By("Birth.Date", Operation.LessThanOrEqualTo, new DateTime(1980, 1, 1), connector: FilterStatementConnector.Or);
         	filter.By("Name", Operation.Contains, "Doe");
             var people = People.Where(filter);
@@ -118,7 +118,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithSingleFilterStatementWithBetween()
         {
             var filter = new Filter<Person>();
-            filter.By("Id", Operation.Between, 2, 4);
+            filter.By("Id", Operation.Between, new[] { 2, 4 });
             var people = People.Where(filter);
             var solution = People.Where(p => p.Id >= 2 && p.Id <= 4);
             Assert.That(people, Is.EquivalentTo(solution));
@@ -128,7 +128,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithBetweenAndSimpleFilterStatements()
         {
             var filter = new Filter<Person>();
-            filter.By("Id", Operation.Between, 2, 6).And.By("Birth.Country", Operation.EqualTo, " usa ");
+            filter.By("Id", Operation.Between,new[] { 2, 6 }).And.By("Birth.Country", Operation.EqualTo, " usa ");
             var people = People.Where(filter);
             var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
                                              (p.Birth != null && p.Birth.Country.Trim().ToLower().StartsWith("usa")));
@@ -140,7 +140,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithBetweenAndListOfValuesFilterStatements()
         {
             var filter = new Filter<Person>();
-            filter.By("Id", Operation.Between, 2, 6).And.By("Id", Operation.In, new[] { 4, 5 });
+            filter.By("Id", Operation.Between, new[] { 2, 6 }).And.By("Id", Operation.In, new[] { 4, 5 });
             var people = People.Where(filter);
             var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
                                              new[] { 4, 5 }.Contains(p.Id));
@@ -192,7 +192,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderUsingIsEmptyOperation()
         {
             var filter = new Filter<Person>();
-            filter.By("Birth.Country", Operation.IsEmpty, (object)null, (object)null, FilterStatementConnector.And);
+            filter.By("Birth.Country", Operation.IsEmpty, (object)null, FilterStatementConnector.And);
             var people = People.Where(filter);
             var solution = People.Where(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim() == string.Empty);
             Assert.That(people, Is.EquivalentTo(solution));
@@ -232,7 +232,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithWrongNumberOrValuesWhenExpectingNoValuesAtAll()
         {
             var filter = new Filter<Person>();
-            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.IsNull, 1, 2));
+            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.IsNull, new[] { 1, 2 }));
             Assert.That(ex.Message, Does.Match(@"The operation '\w*' admits exactly '\w*' values \(not more neither less than this\)."));
         }
 
@@ -240,7 +240,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithWrongNumberOrValuesWhenExpectingJustOneValue()
         {
             var filter = new Filter<Person>();
-            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.EqualTo, 1, 2));
+            var ex = Assert.Throws<WrongNumberOfValuesException>(() => filter.By("Id", Operation.EqualTo, new[] { 1, 2 }));
             Assert.That(ex.Message, Does.Match(@"The operation '\w*' admits exactly '\w*' values \(not more neither less than this\)."));
         }
 
@@ -298,12 +298,41 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderUsingComplexExpressionsFluentInterface()
         {
             var filter = new Filter<Person>();
-            filter.By("Birth.Country", Operation.EqualTo, "USA").And.By("Name", Operation.DoesNotContain, "doe")
-                .Or
-                .Group.By("Name", Operation.EndsWith, "Doe").And.By("Birth.Country", Operation.IsNullOrWhiteSpace);
+            filter
+                .OpenGroup
+                    .OpenGroup
+                        .By("Name", Operation.DoesNotContain, "doe")
+                        .Or
+                        .OpenGroup
+                            .By("Name", Operation.EndsWith, "Doe")
+                            .Or
+                            .By("Name", Operation.StartsWith, "Jo")
+                        .CloseGroup
+                    .CloseGroup
+                    .And
+                    .By("Employer", Operation.IsNull)
+                .CloseGroup
+                .And
+                .By("Birth.Country", Operation.EqualTo, "USA");
             var people = People.Where(filter);
-            var solution = People.Where(p => ((p.Birth != null && p.Birth.Country == "USA") && !p.Name.Contains("Doe"))
-                                || (p.Name.EndsWith("Doe") && (p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country))));
+
+            var solution = People.Where(x =>
+                (
+                    (
+                        x.Name != null && !x.Name.Trim().ToLower().Contains("doe".Trim().ToLower())
+                        ||
+                        (
+                            x.Name != null && x.Name.Trim().ToLower().EndsWith("Doe".Trim().ToLower())
+                            ||
+                            (x.Birth == null || x.Birth != null && (x.Birth.Country == null || x.Birth.Country.Trim() == ""))
+                        )
+                    )
+                    &&
+                    x.Employer == null
+                )
+                &&
+                x.Birth != null && x.Birth.Country != null && x.Birth.Country.Trim().ToLower() == "USA".Trim().ToLower()
+            );
 
             Assert.That(people, Is.EquivalentTo(solution));
         }
@@ -313,14 +342,35 @@ namespace ExpressionBuilder.Test.Unit
         {
             var filter = new Filter<Person>();
             filter.StartGroup();
-            filter.By("Birth.Country", Operation.EqualTo, "USA", default(string), FilterStatementConnector.And);
-            filter.By("Name", Operation.DoesNotContain, "doe", default(string), FilterStatementConnector.Or);
             filter.StartGroup();
-            filter.By("Name", Operation.EndsWith, "Doe", default(string), FilterStatementConnector.And);
-            filter.By("Birth.Country", Operation.IsNullOrWhiteSpace, default(string), default(string), FilterStatementConnector.And);
+            filter.By("Name", Operation.DoesNotContain, "doe", connector: FilterStatementConnector.Or);
+            filter.StartGroup();
+            filter.By("Name", Operation.EndsWith, "Doe", connector: FilterStatementConnector.Or);
+            filter.By("Name", Operation.StartsWith, "Jo", connector: FilterStatementConnector.And);
+            filter.EndGroup();
+            filter.EndGroup();
+            filter.By("Employer", Operation.IsNull, FilterStatementConnector.And);
+            filter.EndGroup();
+            filter.By("Birth.Country", Operation.EqualTo, "USA");
             var people = People.Where(filter);
-            var solution = People.Where(p => ((p.Birth != null && p.Birth.Country == "USA") && !p.Name.Contains("Doe"))
-                                || (p.Name.EndsWith("Doe") && (p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country))));
+
+            var solution = People.Where(x =>
+                (
+                    (
+                        x.Name != null && !x.Name.Trim().ToLower().Contains("doe".Trim().ToLower())
+                        ||
+                        (
+                            x.Name != null && x.Name.Trim().ToLower().EndsWith("Doe".Trim().ToLower())
+                            ||
+                            (x.Birth == null || x.Birth != null && (x.Birth.Country == null || x.Birth.Country.Trim() == ""))
+                        )
+                    )
+                    &&
+                    x.Employer == null
+                )
+                &&
+                x.Birth != null && x.Birth.Country != null && x.Birth.Country.Trim().ToLower() == "USA".Trim().ToLower()
+            );
 
             Assert.That(people, Is.EquivalentTo(solution));
         }

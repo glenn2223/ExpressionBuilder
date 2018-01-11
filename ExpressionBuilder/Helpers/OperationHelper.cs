@@ -35,9 +35,8 @@ namespace ExpressionBuilder.Helpers
         /// Retrieves a list of <see cref="Operation"></see> supported by a type.
         /// </summary>
         /// <param name="type">Type for which supported operations should be retrieved.</param>
-        /// <param name="addMatchAny">When true, <see cref="Operation.EqualsAny"/> is added</param>
         /// <returns></returns>
-        public List<Operation> SupportedOperations(Type type, bool addMatchAny = false)
+        public List<Operation> SupportedOperations(Type type)
         {
             var supportedOperations = ExtractSupportedOperationsFromAttribute(type);
             
@@ -45,12 +44,6 @@ namespace ExpressionBuilder.Helpers
             {
                 //The 'In' operation is supported by all types, as long as it's an array...
                 supportedOperations.Add(Operation.In);
-            }
-
-            if (addMatchAny)
-            {
-                //The 'MatchAny' operation is supported by all types, as long as it's attribute is true...
-                supportedOperations.Add(Operation.EqualsAny);
             }
 
             var underlyingNullableType = Nullable.GetUnderlyingType(type);
@@ -100,14 +93,63 @@ namespace ExpressionBuilder.Helpers
         /// <summary>
         /// Retrieves the exactly number of values acceptable by a specific operation.
         /// </summary>
-        /// <param name="operation"><see cref="Operation"></see> for which the number of values acceptable should be verified.</param>
+        /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
+        /// <param name="matchType">See <see cref="Operation" /> for which <see cref="FilterStatementMatchType" /> are allowed.</param>
         /// <returns></returns>
-        public int NumberOfValuesAcceptable(Operation operation)
+        public int NumberOfValuesAcceptable(Operation operation, FilterStatementMatchType matchType)
+        {
+            var attr = FetchAttribute(operation);
+
+            switch (matchType)
+            {
+                case FilterStatementMatchType.Any:
+                    return attr.AllowMatchAny ? -1 : attr.NumberOfValues;
+
+                default:
+                    return attr.AllowMatchAll ? -1 : attr.NumberOfValues;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the <see cref="FilterStatementMatchType"/>'s acceptable by a specific operation.
+        /// </summary>
+        /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
+        /// <returns></returns>
+        public List<FilterStatementMatchType> AllowedMatchTypes(Operation operation)
+        {
+            var attr = FetchAttribute(operation);
+            var allowedTypes = new List<FilterStatementMatchType>();
+
+            if (attr?.AllowMatchAll == true)
+                allowedTypes.Add(FilterStatementMatchType.All);
+            if (attr?.AllowMatchAny == true)
+                allowedTypes.Add(FilterStatementMatchType.Any);
+
+            return allowedTypes;
+        }
+
+        /// <summary>
+        /// Retrieves the exactly number of values acceptable by a specific operation.
+        /// </summary>
+        /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
+        /// <returns></returns>
+        internal int NumberOfValuesAcceptable(Operation operation)
+        {
+            var attr = FetchAttribute(operation);
+
+            return (attr as NumberOfValuesAttribute).NumberOfValues;
+        }
+
+        /// <summary>
+        /// Retrieves the <see cref="NumberOfValuesAttribute"/> from an operation.
+        /// </summary>
+        /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
+        /// <returns></returns>
+        private static NumberOfValuesAttribute FetchAttribute(Operation operation)
         {
             var fieldInfo = operation.GetType().GetField(operation.ToString());
             var attrs = fieldInfo.GetCustomAttributes(false);
-            var attr = attrs.FirstOrDefault(a => a is NumberOfValuesAttribute);
-            return (attr as NumberOfValuesAttribute).NumberOfValues;
+            return attrs.FirstOrDefault(a => a is NumberOfValuesAttribute) as NumberOfValuesAttribute;
         }
     }
 }

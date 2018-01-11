@@ -52,12 +52,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\AddMatchAnyAttribute.cs" />
     <Compile Include="Attributes\NumberOfValuesAttribute.cs" />
     <Compile Include="Attributes\SupportedOperationsAttribute.cs" />
     <Compile Include="Builders\FilterBuilder.cs" />
     <Compile Include="Common\Enumerations.cs" />
     <Compile Include="Configuration\ExpressionBuilderConfig.cs" />
+    <Compile Include="Generics\FilterGroup.cs" />
     <Compile Include="Helpers\BuilderHelper.cs" />
     <Compile Include="Exceptions\WrongNumberOfValuesException.cs" />
     <Compile Include="Exceptions\UnsupportedOperationException.cs" />
@@ -66,9 +66,11 @@
     <Compile Include="Generics\FilterStatementConnection.cs" />
     <Compile Include="Helpers\OperationHelper.cs" />
     <Compile Include="Interfaces\IFilter.cs" />
+    <Compile Include="Interfaces\IFilterGroup.cs" />
     <Compile Include="Interfaces\IFilterStatementConnection.cs" />
     <Compile Include="Interfaces\IBuilderHelper.cs" />
     <Compile Include="Interfaces\IFilterStatement.cs" />
+    <Compile Include="Interfaces\IFilterStatementOrGroup.cs" />
     <Compile Include="Interfaces\IOperationHelper.cs" />
     <Compile Include="Interfaces\IPropertyCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -53,6 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Group.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Group.Designer.cs">
+      <DependentUpon>Group.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ucFilter.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -85,6 +91,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Group.resx">
+      <DependentUpon>Group.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ucFilter.resx">
+      <DependentUpon>ucFilter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

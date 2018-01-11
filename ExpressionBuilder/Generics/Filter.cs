@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Schema;
 using ExpressionBuilder.Helpers;
 using System.Linq;
+using System.Text;
 
 namespace ExpressionBuilder.Generics
 {
@@ -18,9 +19,33 @@ namespace ExpressionBuilder.Generics
     [Serializable]
     public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
 	{
-		private List<List<IFilterStatement>> _statements;
-        
-        public IFilter Group
+		private List<IFilterStatementOrGroup> _statements;
+		private List<IFilterStatementOrGroup> _currentGroup;
+        private List<int> _nest;
+
+        /// <summary>
+        /// List of <see cref="IFilterStatement" /> groups that will be combined and built into a LINQ expression.
+        /// </summary>
+        public List<IFilterStatementOrGroup> Statements
+        {
+            get
+            {
+                return _statements;
+            }
+        }
+		
+        private List<IFilterStatementOrGroup> CurrentStatementGroup
+        {
+            get
+            {
+                return _currentGroup;
+            }
+        }
+
+        /// <summary>
+        /// Initiates a new group
+        /// </summary>
+        public IFilter OpenGroup
         {
             get
             {
@@ -30,31 +55,13 @@ namespace ExpressionBuilder.Generics
         }
 
         /// <summary>
-        /// List of <see cref="IFilterStatement" /> groups that will be combined and built into a LINQ expression.
-        /// </summary>
-        public IEnumerable<IEnumerable<IFilterStatement>> Statements
-        {
-            get
-            {
-                return _statements.ToArray();
-            }
-        }
-		
-        private List<IFilterStatement> CurrentStatementGroup
-        {
-            get
-            {
-                return _statements.Last();
-            }
-        }
-
-        /// <summary>
         /// Instantiates a new <see cref="Filter{TClass}" />
         /// </summary>
 		public Filter()
 		{
-			_statements = new List<List<IFilterStatement>>();
-            _statements.Add(new List<IFilterStatement>());
+            _statements = new List<IFilterStatementOrGroup>();
+            _currentGroup = _statements;
+            _nest = new List<int>();
         }
 
         /// <summary>
@@ -67,44 +74,103 @@ namespace ExpressionBuilder.Generics
         /// <returns></returns>
         public IFilterStatementConnection By(string propertyId, Operation operation, FilterStatementConnector connector = FilterStatementConnector.And)
         {
-            return By<string>(propertyId, operation, null, null, connector);
+            return By(propertyId, operation, (string)null, connector);
         }
 
         /// <summary>
         /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
         /// </summary>
         /// <typeparam name="TPropertyType"></typeparam>
-        /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
-        /// <param name="operation"></param>
-        /// <param name="value"></param>
-        /// <param name="value2"></param>
-        /// <param name="connector"></param>
+        /// <param name="propertyId">Name of the property that will be filtered.</param>
+        /// <param name="operation">Express the interaction between the property and the constant value.</param>
+        /// <param name="values">Constant enumeration of values that will interact with the property.</param>
+        /// <param name="connector">Establishes how this filter statement will connect to the next one.</param>
+        /// <param name="matchType">Establishes how the IList values will be matched to the property</param>
+        /// <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
         /// <returns></returns>
-		public IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, TPropertyType value, TPropertyType value2 = default(TPropertyType), FilterStatementConnector connector = FilterStatementConnector.And)
+        public IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, IEnumerable<TPropertyType> values, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
+        {
+            IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, values, connector, matchType);
+            CurrentStatementGroup.Add(statement);
+            return new FilterStatementConnection<TClass>(this, statement);
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
+        /// </summary>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="propertyId">Name of the property that will be filtered.</param>
+        /// <param name="operation">Express the interaction between the property and the constant value.</param>
+        /// <param name="value">Constant value that will interact with the property.</param>
+        /// <param name="connector">Establishes how this filter statement will connect to the next one.</param>
+        /// <param name="matchType">Establishes how the IList values will be matched to the property</param>
+        /// <returns></returns>
+		public IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
 		{
-			IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, value, value2, connector);
+			IFilterStatement statement = new FilterStatement<TPropertyType>(propertyId, operation, value, connector, matchType);
             CurrentStatementGroup.Add(statement);
 			return new FilterStatementConnection<TClass>(this, statement);
-		}
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />. Backward compatible
+        /// </summary>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="propertyId">Name of the property that will be filtered.</param>
+        /// <param name="operation">Express the interaction between the property and the constant value.</param>
+        /// <param name="value">Constant value that will interact with the property.</param>
+        /// <param name="value2">Constant value that will interact with the property.</param>
+        /// <param name="connector">Establishes how this filter statement will connect to the next one.</param>
+        /// <param name="matchType">Establishes how the IList values will be matched to the property</param>
+        /// <returns></returns>
+		public IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, TPropertyType value, TPropertyType value2, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
+        {
+            if (value2 != null)
+                return By(propertyId, operation, value, connector, matchType);
+
+            return By(propertyId, operation, new[] { value, value2 }.AsEnumerable(), connector, matchType);
+        }
 
         /// <summary>
         /// Starts a new group denoting that every subsequent filter statement should be grouped together (as if using a parenthesis).
         /// </summary>
         public void StartGroup()
         {
-            if (CurrentStatementGroup.Any())
+            var group = new FilterGroup();
+
+            _nest.Add(_currentGroup.Count);
+
+            _currentGroup.Add(group);
+            _currentGroup = group.Group;
+        }
+
+        /// <summary>
+        /// Ends the current group denoting that every subsequent filter statement should be added after the parenthesis group.
+        /// </summary>
+        public void EndGroup()
+        {
+            if (_nest.Count == 0)
+                throw new ArgumentException("There is no group to end");
+
+            List<IFilterStatementOrGroup> current = _statements;
+
+            _nest.RemoveAt(_nest.Count - 1);
+
+            foreach(var index in _nest)
             {
-                _statements.Add(new List<IFilterStatement>());
+                current = ((IFilterGroup)current[index]).Group;
             }
+
+            _currentGroup = current;
         }
 
         /// <summary>
         /// Removes all <see cref="FilterStatement{TPropertyType}" />, leaving the <see cref="Filter{TClass}" /> empty.
         /// </summary>
         public void Clear()
-		{
-			_statements.Clear();
-            _statements.Add(new List<IFilterStatement>());
+        {
+            _statements.Clear();
+            _currentGroup = _statements;
         }
 
         /// <summary>
@@ -113,8 +179,7 @@ namespace ExpressionBuilder.Generics
         /// <param name="filter"></param>
         public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
 		{
-			var builder = new FilterBuilder(new BuilderHelper());
-			return builder.GetExpression<TClass>(filter).Compile();
+			return FilterBuilder.GetExpression<TClass>(filter).Compile();
 		}
 
         /// <summary>
@@ -123,8 +188,7 @@ namespace ExpressionBuilder.Generics
         /// <param name="filter"></param>
         public static implicit operator System.Linq.Expressions.Expression<Func<TClass, bool>>(Filter<TClass> filter)
         {
-            var builder = new FilterBuilder(new BuilderHelper());
-			return builder.GetExpression<TClass>(filter);
+			return FilterBuilder.GetExpression<TClass>(filter);
         }
 
         /// <summary>
@@ -133,26 +197,17 @@ namespace ExpressionBuilder.Generics
         /// <returns></returns>
         public override string ToString()
 		{
-			var result = new System.Text.StringBuilder();
-			FilterStatementConnector lastConector = FilterStatementConnector.And;
+            var sB = new StringBuilder();
+            var lastConnector = FilterStatementConnector.And;
 
-            foreach (var statementGroup in _statements)
+            for (var index = 0; index < _statements.Count; index++)
             {
-                if (_statements.Count() > 1) result.Append("(");
-
-                var groupResult = new System.Text.StringBuilder();
-                foreach (var statement in statementGroup)
-                {
-                    if (groupResult.Length > 0) groupResult.Append(" " + lastConector + " ");
-                    groupResult.Append(statement.ToString());
-                    lastConector = statement.Connector;
-                }
-
-                result.Append(groupResult.ToString().Trim());
-                if (_statements.Count() > 1) result.Append(")");
+                sB.Append(_statements[index].ToString(ref lastConnector));
+                if (index < _statements.Count - 1)
+                    sB.Append(" " + lastConnector + " ");
             }
-			
-			return result.ToString();
+
+			return sB.ToString();
 		}
 
         /// <summary>
@@ -172,7 +227,7 @@ namespace ExpressionBuilder.Generics
         {
             while (reader.Read())
             {
-                if (reader.Name.Equals("StatementsGroup") && reader.IsStartElement())
+                if (reader.IsStartElement("FilterGroup"))
                 {
                     StartGroup();
                 }
@@ -185,6 +240,11 @@ namespace ExpressionBuilder.Generics
                     var statement = (IFilterStatement)serializer.Deserialize(reader);
                     CurrentStatementGroup.Add(statement);
                 }
+
+                if (reader.Name == "FilterGroup" && reader.NodeType == XmlNodeType.EndElement)
+                {
+                    EndGroup();
+                }
             }
         }
 
@@ -196,15 +256,11 @@ namespace ExpressionBuilder.Generics
         {
             writer.WriteAttributeString("Type", typeof(TClass).AssemblyQualifiedName);
             writer.WriteStartElement("Statements");
-            foreach (var statementsGroup in _statements)
+
+            foreach (var statementFiltersOrGroups in _statements)
             {
-                writer.WriteStartElement("StatementsGroup");
-                foreach (var statement in statementsGroup)
-                {
-                    var serializer = new XmlSerializer(statement.GetType());
-                    serializer.Serialize(writer, statement);
-                }
-                writer.WriteEndElement();
+                var serializer = new XmlSerializer(statementFiltersOrGroups.GetType());
+                serializer.Serialize(writer, statementFiltersOrGroups);
             }
 
             writer.WriteEndElement();

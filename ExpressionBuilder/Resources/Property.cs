@@ -20,17 +20,12 @@ namespace ExpressionBuilder.Resources
         /// Property metadata.
         /// </summary>
         public PropertyInfo Info { get; private set; }
-        /// <summary>
-        /// Add <see cref="Common.Operation.EqualsAny"/> to operation list
-        /// </summary>
-        public bool MatchAny = false;
 
-        internal Property(string id, string name, PropertyInfo info, bool matchAny)
+        internal Property(string id, string name, PropertyInfo info)
         {
             Id = id;
             Name = name;
             Info = info;
-            MatchAny = matchAny;
         }
 
         /// <summary>

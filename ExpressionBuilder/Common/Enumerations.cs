@@ -18,6 +18,21 @@ namespace ExpressionBuilder.Common
     }
 
     /// <summary>
+    /// Defines how the filter statements with IList values will be searched.
+    /// </summary>
+    public enum FilterStatementMatchType
+    {
+        /// <summary>
+        /// Determines that there must be a match for ALL values.
+        /// </summary>
+        All,
+        /// <summary>
+        /// Determines that there must be a match for ANY value.
+        /// </summary>
+        Any
+    }
+
+    /// <summary>
     /// Defines the operations supported by the <seealso cref="Builders.FilterBuilder" />.
     /// </summary>
     public enum Operation
@@ -26,63 +41,63 @@ namespace ExpressionBuilder.Common
         /// Targets an object in which the property's value is equal to the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, false, true)]
         EqualTo,
 
         /// <summary>
         /// Targets an object in which the property's value contains part of the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, true, true)]
         Contains,
 
         /// <summary>
         /// Targets an object in which the property's value starts with the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, false, true)]
         StartsWith,
 
         /// <summary>
         /// Targets an object in which the property's value ends with the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, false, true)]
         EndsWith,
 
         /// <summary>
         /// Targets an object in which the property's value is not equal to the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, true, false)]
         NotEqualTo,
 
         /// <summary>
         /// Targets an object in which the property's value is greater than the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, true, true)]
         GreaterThan,
 
         /// <summary>
         /// Targets an object in which the property's value is greater than or equal to the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, true, true)]
         GreaterThanOrEqualTo,
 
         /// <summary>
         /// Targets an object in which the property's value is less than the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, true, true)]
         LessThan,
 
         /// <summary>
         /// Targets an object in which the property's value is less than or equal to the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, true, true)]
         LessThanOrEqualTo,
 
         /// <summary>
@@ -138,22 +153,15 @@ namespace ExpressionBuilder.Common
         /// Targets an object in which the provided value is presented in the property's value (as a list).
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
+        [NumberOfValues(1, true, true)]
         In,
 
         /// <summary>
         /// Targets an object in which the property's value does not contain part of the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [NumberOfValues(1)]
-        DoesNotContain,
-
-        /// <summary>
-        /// Targets an object in which the property's value is presented in the provided value (as a list).
-        /// </summary>
-        /// <remarks>Accepts one value array.</remarks>
-        [NumberOfValues(1)]
-        EqualsAny
+        [NumberOfValues(1, true, false)]
+        DoesNotContain
     }
     
     /// <summary>

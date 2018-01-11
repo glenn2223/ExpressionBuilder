@@ -129,9 +129,6 @@
   <data name="EndsWith" xml:space="preserve">
     <value>termina com</value>
   </data>
-  <data name="EqualsAny" xml:space="preserve">
-    <value>Igual a qualquer (separado por vírgula)</value>
-  </data>
   <data name="EqualTo" xml:space="preserve">
     <value>igual</value>
   </data>

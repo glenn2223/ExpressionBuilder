@@ -39,6 +39,18 @@ namespace ExpressionBuilder.Generics
 				_statement.Connector = FilterStatementConnector.Or;
 				return _filter;
 			}
-		}
-	}
+        }
+
+        /// <summary>
+        /// Closes a previously opened parenthesis.
+        /// </summary>
+        public IFilterStatementConnection CloseGroup
+        {
+            get
+            {
+                _filter.EndGroup();
+			    return this;
+            }
+        }
+    }
 }

@@ -100,7 +100,7 @@ namespace ExpressionBuilder.Resources
             {
                 if (property.PropertyType.IsValueType || property.PropertyType == typeof(String))
                 {
-                    list.Add(new Property(property.Name, property.Name, property, Attribute.IsDefined(property, typeof(AddMatchAny))));
+                    list.Add(new Property(property.Name, property.Name, property));
                     continue;
                 }
 
@@ -109,7 +109,7 @@ namespace ExpressionBuilder.Resources
                     var props = LoadProperties(property.PropertyType.GetGenericArguments()[0]);
                     foreach (var info in props)
                     {
-                        list.Add(new Property(property.Name + "[" + info.Id + "]", info.Name, info.Info, Attribute.IsDefined(property, typeof(AddMatchAny))));
+                        list.Add(new Property(property.Name + "[" + info.Id + "]", info.Name, info.Info));
                     }
                     continue;
                 }
@@ -119,7 +119,7 @@ namespace ExpressionBuilder.Resources
                     var props = LoadProperties(property.PropertyType);
                     foreach (var info in props)
                     {
-                        list.Add(new Property(property.Name + "." + info.Id, info.Name, info.Info, Attribute.IsDefined(property, typeof(AddMatchAny))));
+                        list.Add(new Property(property.Name + "." + info.Id, info.Name, info.Info));
                     }
                     continue;
                 }

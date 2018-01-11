@@ -47,7 +47,7 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithPropertyChainFilterStatements()
         {
             var filter = new Filter<Products>();
-            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", default(string), FilterStatementConnector.Or);
+            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", FilterStatementConnector.Or);
             filter.By("Categories.CategoryName.Length", Operation.GreaterThanOrEqualTo, 12);
             var products = db.Products.Where(filter);
             var solution = db.Products.Where(p => (p.Categories != null && p.Categories.CategoryName != null && p.Categories.CategoryName.Trim().ToLower().Equals("beverages")) ||
@@ -80,7 +80,7 @@ namespace ExpressionBuilder.Test.Database
         public void BuilderWithSingleFilterStatementWithBetween()
         {
             var filter = new Filter<Products>();
-            filter.By("ProductID", Operation.Between, 2, 5);
+            filter.By("ProductID", Operation.Between, new[] { 2, 5 });
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => p.ProductID >= 2 && p.ProductID <= 5);
             Assert.That(people, Is.EquivalentTo(solution));
@@ -110,9 +110,12 @@ namespace ExpressionBuilder.Test.Database
         public void BuilderUsingComplexExpressionsFluentInterface()
         {
             var filter = new Filter<Products>();
-            filter.By("SupplierID", Operation.EqualTo, 1)
+            filter
+                .By("SupplierID", Operation.EqualTo, 1)
                 .And
-                .Group.By("CategoryID", Operation.EqualTo, 1).Or.By("CategoryID", Operation.EqualTo, 2);
+                .OpenGroup
+                    .By("CategoryID", Operation.EqualTo, 1)
+                    .Or.By("CategoryID", Operation.EqualTo, 2);
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => p.SupplierID == 1 && (p.CategoryID == 1 || p.CategoryID == 2));
 

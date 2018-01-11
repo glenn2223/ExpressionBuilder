@@ -7,6 +7,8 @@ using ExpressionBuilder.Common;
 using ExpressionBuilder.Helpers;
 using ExpressionBuilder.Resources;
 using ExpressionBuilder.Interfaces;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace ExpressionBuilder.WinForms.Controls
 {
@@ -39,34 +41,45 @@ namespace ExpressionBuilder.WinForms.Controls
 		{
 			get
 			{
-                var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation);
+                var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation, MatchType);
+                if (numberOfValues == -1) numberOfValues = 1;
                 return numberOfValues > 0 ? GetValue("ctrlValue") : null;
 			}
 		}
 
-		public object Value2
-		{
-			get
-			{
-                var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation);
-                return numberOfValues == 2 ? GetValue("ctrlValue2") : null;
-			}
-		}
-		
+        public FilterStatementMatchType MatchType
+        {
+            get
+            {
+                if (cbMatchTypes.Items.Count == 0 || cbMatchTypes.SelectedItem == null)
+                    return FilterStatementMatchType.All;
+                return (FilterStatementMatchType)Enum.Parse(typeof(FilterStatementMatchType), cbMatchTypes.SelectedItem.ToString());
+            }
+        }
+
         private object GetValue(string ctrlName)
         {
-            var ctrl = Controls[ctrlName];
-
-            if (ctrl != null)
+            var property = _properties[PropertyId];
+            var type = Nullable.GetUnderlyingType(property.Info.PropertyType) ?? property.Info.PropertyType;
+            var myList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+            
+            foreach (Control ctrl in valuesContainer.Controls)
             {
-                var property = _properties[PropertyId];
-                var type = Nullable.GetUnderlyingType(property.Info.PropertyType) ?? property.Info.PropertyType;
-                if (type == typeof(string)) return ctrl.Text;
-                if (type == typeof(DateTime)) return (ctrl as DateTimePicker).Value;
-                if (type == typeof(int)) return Convert.ToInt32((ctrl as NumericUpDown).Value);
-                if (type == typeof(bool)) return Boolean.Parse(ctrl.Text);
-                if (type.IsEnum) return Enum.ToObject(property.Info.PropertyType, (ctrl as DomainUpDown).SelectedItem);
+                if (ctrl.Name.StartsWith("ctrlValue"))
+                {
+                    if (type == typeof(string)) myList.Add(ctrl.Text);
+                    if (type == typeof(DateTime)) myList.Add((ctrl as DateTimePicker).Value);
+                    if (type == typeof(int)) myList.Add(Convert.ToInt32((ctrl as NumericUpDown).Value));
+                    if (type == typeof(bool)) myList.Add(Boolean.Parse(ctrl.Text));
+                    if (type.IsEnum) myList.Add(Enum.ToObject(property.Info.PropertyType, (ctrl as DomainUpDown).SelectedItem));
+                }
             }
+
+            if (myList.Count > 0)
+                if (myList.Count == 1)
+                    return myList[0];
+                else
+                    return myList;
 
 			return null;
         }
@@ -99,6 +112,7 @@ namespace ExpressionBuilder.WinForms.Controls
 		
 		public event EventHandler OnAdd;
 		public event EventHandler OnRemove;
+		public event EventHandler OnAddGroup;
 		
 		void UcFilterLoad(object sender, EventArgs e)
 		{
@@ -120,11 +134,9 @@ namespace ExpressionBuilder.WinForms.Controls
 
         private void LoadOperations()
         {
-            LoadValueControls();
-
             var type = _properties[PropertyId].Info.PropertyType;
             var supportedOperations = new OperationHelper()
-                                        .SupportedOperations(type, _properties[PropertyId].MatchAny)
+                                        .SupportedOperations(type)
                                         .Select(o => new {
                                             Id = o.ToString(),
                                             Name = o.GetDescription(Resources.Operations.ResourceManager)
@@ -134,6 +146,8 @@ namespace ExpressionBuilder.WinForms.Controls
             cbOperations.ValueMember = "Id";
             cbOperations.DisplayMember = "Name";
             cbOperations.DataSource = supportedOperations;
+
+            LoadValueControls();
         }
 
 		void cbProperties_SelectedIndexChanged(object sender, EventArgs e)
@@ -143,22 +157,35 @@ namespace ExpressionBuilder.WinForms.Controls
 		
 		void LoadValueControls()
 		{
-            Controls.RemoveByKey("ctrlValue");
-            Controls.RemoveByKey("ctrlValue2");
+            LoadMatchTypes();
 
-            var ctrl = CreateNewControl();
-			ctrl.Name = "ctrlValue";
-			ctrl.Size = new Size(300, 20);
-			ctrl.Location = new Point(422, 6);
-			Controls.Add(ctrl);
+            var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation, MatchType);
 
-            var ctrl2 = CreateNewControl();
-			ctrl2.Name = "ctrlValue2";
-			ctrl2.Size = new Size(300, 20);
-			ctrl2.Location = new Point(727, 6);
-			Controls.Add(ctrl2);
-		}
-		
+            if (numberOfValues == -1) numberOfValues = 1;
+
+            valuesContainer.Controls.Clear();
+
+            for (var i = 0; i < numberOfValues; i++)
+            {
+                var ctrl = CreateNewControl();
+                ctrl.Name = "ctrlValue" + (i + 1);
+                ctrl.KeyDown += (s, e) => OnEnterAddControl(s, e, valuesContainer.Controls);
+                valuesContainer.Controls.Add(ctrl);
+            }
+        }
+
+        void LoadMatchTypes()
+        {
+            cbMatchTypes.Visible = true;
+            cbMatchTypes.DataSource = null;
+
+            var allowedMatchTypes = new OperationHelper().AllowedMatchTypes(Operation);
+            if (allowedMatchTypes.Count == 0)
+                cbMatchTypes.Visible = false;
+            else
+                cbMatchTypes.DataSource = allowedMatchTypes.ToArray();
+        }
+
         Control CreateNewControl()
         {
             var info = _properties[PropertyId].Info;
@@ -202,7 +229,7 @@ namespace ExpressionBuilder.WinForms.Controls
             return ctrl;
         }
 
-		public IPropertyCollection LoadProperties(Type type)
+        public IPropertyCollection LoadProperties(Type type)
 		{
             return _properties = new PropertyCollection(type, Resources.Person.ResourceManager);
 
@@ -210,7 +237,7 @@ namespace ExpressionBuilder.WinForms.Controls
 		
 		void BtnAddClick(object sender, EventArgs e)
 		{
-			OnAdd(sender, e);
+            OnAdd(sender, e);
 		}
 		
 		void BtnRemoveClick(object sender, EventArgs e)
@@ -220,20 +247,7 @@ namespace ExpressionBuilder.WinForms.Controls
 
         private void cbOperations_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetControlVisibility("ctrlValue", true);
-            SetControlVisibility("ctrlValue2", true);
-
-            var numberOfValues = new OperationHelper().NumberOfValuesAcceptable(Operation);
-            switch (numberOfValues)
-            {
-                case 0:
-                    SetControlVisibility("ctrlValue", false);
-                    SetControlVisibility("ctrlValue2", false);
-                    break;
-                case 1:
-                    SetControlVisibility("ctrlValue2", false);
-                    break;
-            }
+            LoadValueControls();
         }
 
         private void SetControlVisibility(string controlName, bool visible)
@@ -244,6 +258,28 @@ namespace ExpressionBuilder.WinForms.Controls
             {
                 ctrl.Visible = visible;
             }
+        }
+
+        private void OnEnterAddControl(object sender, KeyEventArgs e, ControlCollection collection)
+        {
+            if (e.KeyCode != Keys.Enter || new OperationHelper().NumberOfValuesAcceptable(Operation, MatchType) != -1)
+                return;
+
+            var controlcount = Controls.Count;
+
+            var ctrl = CreateNewControl();
+            ctrl.Name = "ctrlValue" + controlcount;
+            ctrl.KeyDown += (s, eA) => OnEnterAddControl(s, eA, collection);
+            collection.Add(ctrl);
+            ctrl.Focus();
+        }
+
+        private void MiAddGroup_Click(object sender, EventArgs e)
+        {
+            var item = sender as ToolStripMenuItem;
+            var strip = item.Owner as ContextMenuStrip;
+
+            OnAddGroup((strip.SourceControl as Button).Parent.Parent, e);
         }
     }
 }
