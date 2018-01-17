@@ -2,15 +2,16 @@
 
 ## Version 1.2.0: [CURRENT RELEASE]
 ### Summary
-* Support for very complex expressions. Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](issues/10))
-* Added match types. Match a list of values (i.e. A name that contains any of: "John", "Jess") [See reference](\#complex-expressions)
+* **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
+* **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](README.md#multi-match-types)
+
 
 ### Changes
 * Created the `FilterStatementMatchType` enumeration
- * Added "Allowed MatchTypes" to `Operations` and defined usage in `NumberOfValuesAttribute`
+  * Added "Allowed MatchTypes" to `Operations` and defined usage in `NumberOfValuesAttribute`
 * Created `IFilterGroup`, `FilterGroup` and `IFilterStatementOrGroup` (abstract classes)
- * `IFilterGroup` contains a Group (`List<IFilterStatementOrGroup>`), this can contain either Statements or Groups (Also applies to `FilterGroup`) [Built in XML serialisation]
- * `IFilterStatementOrGroup` is now used instead of FilterStatement, this allows for groups in groups. The `Build` method is used to build the expression
+  * `IFilterGroup` contains a Group (`List<IFilterStatementOrGroup>`), this can contain either Statements or Groups (Also applies to `FilterGroup`) [Built in XML serialisation]
+  * `IFilterStatementOrGroup` is now used instead of FilterStatement, this allows for groups in groups. The `Build` method is used to build the expression
 * Changes to `Filter`
   * Changed `By` method (removing second value). You now create arrays/lists of values (when needed).
     * Added a method to maintain backward compatibility
@@ -36,7 +37,7 @@
   * `Between` method is now passed an `(ConstantExpression)Expression((Array)List<Value's>)` which is indexed to be used in the expression
 
 ### Minor Changes (Not Affecting NuGet Package)
-* Made changes to the Form application to all the use of [`Groups`](\#complex-expressions) and `Match Any|All`
+* Made changes to the Form application to all the use of [`Groups`](\#groups-in-winform) and `Match Any|All`
 * Revised tests to make them work with the new methods. Also removed some test as they no longer apply
 * Added changelog
 * Revised README to mention new updates and extra functionality (also added new image to assist the change)
@@ -54,12 +55,10 @@
 ## Version 1.1.0:
 * Initial release
 
-___
-
-___
+---
 
 # License
-Copyright 2018 David Belmont
+&copy; Copyright 2018 David Belmont
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

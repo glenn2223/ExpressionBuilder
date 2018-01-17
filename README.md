@@ -1,7 +1,7 @@
 # Expression Builder
 In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
 
-Would this help you in anyway? Well, if your answer is 'yes', you just made my day a bit better. :smile:
+Would this help you in any way? Well, if your answer is 'yes', you just made my day a bit better. :smile:
 
 ## Features:
 * Ability to reference properties by their names
@@ -12,8 +12,9 @@ Would this help you in anyway? Well, if your answer is 'yes', you just made my d
 * Globalization support
 
 ## What's New: Version 1.2.0
-* Support for very complex expressions. Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](issues/10))
-* Added match types. Match a list of values (i.e. A name that contains any of: "John", "Jess") [See reference](#complex-expressions)
+* **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
+* **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](#multi-match-types)
+
 For a full list of changes and previous revisions, see the [Change Log](ExpressionBuilder/ChangeLog.md)
 
 ## Suggestions & Issues
@@ -179,7 +180,7 @@ You just need to perform some easy steps to add globalization support to the UI:
 5. And for the operations, you have an extension method: `Operation.GreaterThanOrEqualTo.GetDescription(Resources.Operations.ResourceManager)`.
 
 #### Note on globalization
-Any property or operation not mentioned at the resources files will be replaced by its conventionalised property identifier.
+Any property or operation not mentioned in the resources files will be replaced by its conventionalised property identifier.
 
 ## Complex expressions
 Complex expressions are handled basically by grouping up filter statements, like in the example below:
@@ -226,15 +227,41 @@ db.Products
   .Where(p => ( ( !p.Name.Contains("doe") || ( p.Name.EndsWith("Doe") || p.Name.StartsWith("Jo") ) ) && p.Employer == null ) && p.Birth.Country == "USA" );
 ```
 
-Every time you start a group that means all further statements will by at the same "parenthesis" until EndGroup is called.
+Every time you start a group that means all further statements will be at the same "parenthesis" until EndGroup is called.
 You can even add groups to groups! (For those super complex expressions)
 
-The WinForms has been updated to allow tests of groups. Simply right click on a `+` button and choose `Add Group`, this can give you a form like the below:
-
+### Groups In WinForm
+The WinForms has been updated to allow tests of groups. Simply right-click on a `+` button and choose `Add Group`. Doing this can produce a form like the below image:\
 ![FormUI - Group Example](docs/FormGroupBuild.png)
 
+## Multi-Match Types
+See the below examples of common cases:
+* You have a few words entered as a search term, looking for a product.
+* You want to find all Tasks currently assigned to a group of users at work.
+
+This can now be done, thanks to multi-match types!
+
+Let's take the first item as an example. We want to find a "Bright Blue Bicycle"! Simple, split the term and filter by it.
+
+```CSharp
+var filter = new Filter<Products>();
+var termArr = "Bright Blue Bicycle".Split(' ');
+
+// Connector and MatchType are defaulted to what we want
+// So, giving an array (or list) works straight away. No extra code required!
+filter.By("Name", Operation.Contains, termArr);
+
+// or 
+// Declare `matchType:`
+filter.By("Name", Operation.Contains, termArr, matchType: FilterStatementMatchType.All);
+
+// or 
+// Declare `connector` &&  `matchType:`
+filter.By("Name", Operation.Contains, termArr, FilterStatementConnector.And, FilterStatementMatchType.All);
+```
+
 # License
-Copyright 2018 David Belmont
+&copy; Copyright 2018 David Belmont
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -245,5 +272,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+---
 
 Icon by [Alina Oleynik](https://thenounproject.com/dorxela), Ukraine
