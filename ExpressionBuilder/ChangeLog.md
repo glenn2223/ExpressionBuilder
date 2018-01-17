@@ -5,7 +5,6 @@
 * **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
 * **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](README.md#multi-match-types)
 
-
 ### Changes
 * Created the `FilterStatementMatchType` enumeration
   * Added "Allowed MatchTypes" to `Operations` and defined usage in `NumberOfValuesAttribute`
@@ -45,20 +44,11 @@
 
 ## Version 1.1.2:
 ### Summary
-* New operation added: DoesNotContain
-* [Support for complex expressions](issues/10) (those that group up statements within parenthesis)
-* Added tests using LINQ to SQL (along with a [bug fix regarding the library usage with LINQ to SQL](issues/12))
-
-## Version 1.1.1:
-// TODO: Add these changes
-
-## Version 1.1.0:
-* Initial release
-
----
+* Intial release
+  * The releases version used to improve on. See link at bottom.
 
 # License
-&copy; Copyright 2018 David Belmont
+&copy; Copyright 2018 Glenn Marks
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -69,5 +59,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+---
+
+[Original Work](https://github.com/dbelmont/ExpressionBuilder/) &copy; Copyright 2018 David Belmont
 
 Icon by [Alina Oleynik](https://thenounproject.com/dorxela), Ukraine
