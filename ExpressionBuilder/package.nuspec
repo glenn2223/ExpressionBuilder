@@ -11,7 +11,7 @@
     <description>Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.</description>
     <copyright>Glenn Marks © 2018</copyright>
     <tags>Expression Builder LINQ, Lambda Expression Builder, Lambda Builder</tags>
-    <iconUrl>https://raw.githubusercontent.com/dbelmont/ExpressionBuilder/master/expb.ico</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/glenn2223/LambdaExpressionBuilder/Master-2018/ExpressionBuilder/LambdaExpressionBuilder.svg</iconUrl>
   </metadata>
   <files>
     <file src="bin\$configuration$\$id$.dll" target="lib\net45" />
