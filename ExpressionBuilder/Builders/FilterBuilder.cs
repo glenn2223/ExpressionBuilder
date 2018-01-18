@@ -247,7 +247,8 @@ namespace ExpressionBuilder.Builders
         private Expression Contains(Expression member, Expression expression)
         {
             MethodCallExpression contains = null;
-            if (expression is ConstantExpression constant && constant.Value is IList && constant.Value.GetType().IsGenericType)
+            ConstantExpression constant = expression as ConstantExpression;
+            if (constant != null && constant.Value is IList && constant.Value.GetType().IsGenericType)
             {
                 var type = constant.Value.GetType();
                 var containsInfo = type.GetMethod("Contains", new[] { type.GetGenericArguments()[0] });

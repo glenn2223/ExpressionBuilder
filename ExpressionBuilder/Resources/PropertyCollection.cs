@@ -33,12 +33,24 @@ namespace ExpressionBuilder.Resources
         /// <summary>
         /// 
         /// </summary>
-        public object SyncRoot => throw new NotImplementedException();
+        public object SyncRoot
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IsSynchronized => throw new NotImplementedException();
+        public bool IsSynchronized
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
         
         /// <summary>
         /// Retrieves a property based on its Id.
