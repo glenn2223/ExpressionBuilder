@@ -109,9 +109,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExpressionBuilder\ExpressionBuilder.csproj">
+    <ProjectReference Include="..\ExpressionBuilder\LambdaExpressionBuilder.csproj">
       <Project>{70bf550d-5943-4162-8fab-0bba743a3d93}</Project>
-      <Name>ExpressionBuilder</Name>
+      <Name>LambdaExpressionBuilder</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

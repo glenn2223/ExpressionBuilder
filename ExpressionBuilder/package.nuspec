@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>$id$</id>
-    <title>$id$</title>
+    <title>$title$</title>
     <version>$version$</version>
     <authors>Glenn Marks, David Belmont</authors>
     <owners>Glenn Marks</owners>
@@ -14,8 +14,8 @@
     <iconUrl>https://raw.githubusercontent.com/glenn2223/LambdaExpressionBuilder/Master-2018/ExpressionBuilder/LambdaExpressionBuilder.svg</iconUrl>
   </metadata>
   <files>
-    <file src="bin\$configuration$\$id$.dll" target="lib\net45" />
-    <file src="bin\$configuration$\$id$.xml" target="lib\net45" />
+    <file src="bin\Release\$id$.dll" target="lib\net45" />
+    <file src="bin\Release\$id$.xml" target="lib\net45" />
     <file src="readme.md" target="" />
   </files>
 </package>
