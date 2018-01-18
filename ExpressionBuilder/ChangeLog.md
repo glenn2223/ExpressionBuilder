@@ -63,5 +63,3 @@ limitations under the License.
 ---
 
 [Original Work](https://github.com/dbelmont/ExpressionBuilder/) &copy; Copyright 2018 David Belmont
-
-Icon by [Alina Oleynik](https://thenounproject.com/dorxela), Ukraine
