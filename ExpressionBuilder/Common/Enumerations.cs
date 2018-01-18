@@ -154,7 +154,7 @@ namespace ExpressionBuilder.Common
         /// Targets an object in which the provided value is presented in the property's value (as a list).
         /// </summary>
         /// <remarks>Accepts one value.</remarks>
-        [Obsolete("In is deprecated. Use Operation.Equals with FilterStatementMatchType.Any")]
+        [Obsolete("Use Operation.Equals with FilterStatementMatchType.Any")]
         [NumberOfValues(1, true, true)]
         In,
 

@@ -76,6 +76,19 @@ namespace ExpressionBuilder.Test.Database
             Assert.That(people, Is.EquivalentTo(solution));
         }
 
+        [TestCase(TestName = "Filter statement with a list of values is the same as the new matchType method")]
+        public void FilterWithFilterStatementWithMatchType()
+        {
+            var filter = new Filter<Products>();
+            filter.By("ProductID", Operation.In, new[] { 1, 2, 4, 5 });
+            var people = db.Products.Where(filter);
+
+            filter = new Filter<Products>();
+            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: FilterStatementMatchType.Any);
+            var peopleOld = db.Products.Where(filter);
+            Assert.That(people, Is.EquivalentTo(peopleOld));
+        }
+
         [TestCase(TestName = "Filter with a single filter statement using a between operation")]
         public void BuilderWithSingleFilterStatementWithBetween()
         {

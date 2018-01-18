@@ -5,15 +5,14 @@ using System.Windows.Forms;
 using ExpressionBuilder.WinForms.Controls;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.WinForms.Models;
-using ExpressionBuilder.Common;
 using System.Drawing;
 
 namespace ExpressionBuilder.WinForms
 {
-	/// <summary>
-	/// Description of MainForm.
-	/// </summary>
-	public partial class MainForm : Form
+    /// <summary>
+    /// Description of MainForm.
+    /// </summary>
+    public partial class MainForm : Form
 	{
 		List<Person> _people;
 		
