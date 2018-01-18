@@ -6,6 +6,8 @@
     <version>$version$</version>
     <authors>Glenn Marks, David Belmont</authors>
     <owners>Glenn Marks</owners>
+    <licenseUrl>https://github.com/glenn2223/LambdaExpressionBuilder/blob/Master-2018/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/glenn2223/LambdaExpressionBuilder/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.</summary>
     <description>Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.</description>
@@ -14,8 +16,8 @@
     <iconUrl>https://raw.githubusercontent.com/glenn2223/LambdaExpressionBuilder/Master-2018/ExpressionBuilder/LambdaExpressionBuilder.svg</iconUrl>
   </metadata>
   <files>
-    <file src="bin\Release\$id$.dll" target="lib\net45" />
-    <file src="bin\Release\$id$.xml" target="lib\net45" />
+    <file src="bin\Release\LambdaExpressionBuilder.dll" target="lib\net45" />
+    <file src="bin\Release\LambdaExpressionBuilder.xml" target="lib\net45" />
     <file src="readme.md" target="" />
   </files>
 </package>

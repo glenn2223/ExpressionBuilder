@@ -9,12 +9,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ExpressionBuilder")]
+[assembly: AssemblyTitle("Lambda Expression Builder")]
 [assembly: AssemblyDescription("A library to enable your application to let users build their own filters to query lists (or even databases) through LINQ.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ExpressionBuilder")]
-[assembly: AssemblyCopyright("Copyright 2017")]
+[assembly: AssemblyProduct("LambdaExpressionBuilder")]
+[assembly: AssemblyCopyright("Copyright © 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

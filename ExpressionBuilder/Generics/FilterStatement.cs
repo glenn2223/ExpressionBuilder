@@ -24,8 +24,8 @@ namespace ExpressionBuilder.Generics
         /// <param name="propertyId"></param>
         /// <param name="operation"></param>
         /// <param name="values"></param>
-        /// <param name="matchType"></param>
         /// <param name="connector"></param>
+        /// <param name="matchType"></param>
 		public FilterStatement(string propertyId, Operation operation, IEnumerable<TPropertyType> values, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
         {
             var constructedListType = typeof(List<>).MakeGenericType(values.FirstOrDefault()?.GetType() ?? typeof(TPropertyType));
@@ -45,8 +45,8 @@ namespace ExpressionBuilder.Generics
         /// <param name="propertyId"></param>
         /// <param name="operation"></param>
         /// <param name="value"></param>
-        /// <param name="matchType"></param>
         /// <param name="connector"></param>
+        /// <param name="matchType"></param>
         public FilterStatement(string propertyId, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
 		{
             PropertyId = propertyId;
