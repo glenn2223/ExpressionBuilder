@@ -119,7 +119,7 @@ namespace ExpressionBuilder.Test.Unit
                 (
                     "Birth.Date",
                     Operation.GreaterThan,
-                    new DateTime(1980, 1, 1),
+                    new DateTime(1980, 1, 1).Date,
                     FilterStatementConnector.And
                 );
                 serializer.Serialize(writer, statement);
@@ -135,8 +135,9 @@ namespace ExpressionBuilder.Test.Unit
             Assert.That(root.Attributes["Type"].Value, Does.StartWith("System.DateTime"));
             Assert.That(root.SelectSingleNode("PropertyId").InnerText, Is.EqualTo("Birth.Date"));
             Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("5"));
-            Assert.That(root.SelectSingleNode("Value").InnerText, Does.StartWith("01/01/1980"));
+            Assert.That(root.SelectSingleNode("Value").InnerText, Is.EqualTo(new DateTime(1980, 1, 1).Date));
             Assert.That(root.SelectSingleNode("Connector").InnerText, Is.EqualTo("0"));
+            Assert.That(root.SelectSingleNode("MatchType").InnerText, Is.EqualTo("0"));
         }
 
         [TestCase(TestName = "Serialize Filter into XML")]

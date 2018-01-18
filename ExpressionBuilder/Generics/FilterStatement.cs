@@ -278,7 +278,7 @@ namespace ExpressionBuilder.Generics
                 writer.WriteEndElement();
             }
             writer.WriteElementString("Connector", Connector.ToString("d"));
-            writer.WriteElementString("Matchtype", MatchType.ToString("d"));
+            writer.WriteElementString("MatchType", MatchType.ToString("d"));
         }
     }
 }
