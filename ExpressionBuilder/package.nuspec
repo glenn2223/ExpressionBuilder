@@ -14,7 +14,7 @@
     <summary>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.</summary>
     <copyright>Glenn Marks © 2018</copyright>
     <language>en-GB</language>
-    <tags>Expression Builder LINQ Lambda Database IQuery</tags>
+    <tags>Expression Builder LINQ Lambda Database IQuery LINQ SQL LINQ2SQL</tags>
     <dependencies>
       <dependency id="Microsoft.Net.Compilers" version="1.0.0" />
     </dependencies>
