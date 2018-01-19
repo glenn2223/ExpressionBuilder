@@ -27,20 +27,20 @@ namespace ExpressionBuilder.Test.Unit
             sb.Append("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
             sb.Append("<FilterOfPerson Type=\"ExpressionBuilder.Test.Models.Person, ExpressionBuilder.Test, Version=1.0.6330.24179, Culture=neutral, PublicKeyToken=null\">");
             sb.Append("  <Statements>");
-            sb.Append("  <StatementsGroup>");
             sb.Append("    <FilterStatementOfInt32 Type=\"System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\">");
             sb.Append("      <PropertyId>Id</PropertyId>");
             sb.Append("      <Operation>6</Operation>");
             sb.Append("      <Value>2</Value>");
             sb.Append("      <Connector>1</Connector>");
+            sb.Append("      <MatchType>0</MatchType>");
             sb.Append("    </FilterStatementOfInt32>");
             sb.Append("    <FilterStatementOfPersonGender Type=\"ExpressionBuilder.Test.Models.PersonGender, ExpressionBuilder.Test, Version=1.0.6330.24179, Culture=neutral, PublicKeyToken=null\">");
             sb.Append("      <PropertyId>Gender</PropertyId>");
             sb.Append("      <Operation>0</Operation>");
             sb.Append("      <Value>Male</Value>");
             sb.Append("      <Connector>0</Connector>");
+            sb.Append("      <MatchType>0</MatchType>");
             sb.Append("    </FilterStatementOfPersonGender>");
-            sb.Append("  </StatementsGroup>");
             sb.Append("  </Statements>");
             sb.Append("</FilterOfPerson>");
             _filterXml = sb.ToString();
@@ -135,7 +135,7 @@ namespace ExpressionBuilder.Test.Unit
             Assert.That(root.Attributes["Type"].Value, Does.StartWith("System.DateTime"));
             Assert.That(root.SelectSingleNode("PropertyId").InnerText, Is.EqualTo("Birth.Date"));
             Assert.That(root.SelectSingleNode("Operation").InnerText, Is.EqualTo("5"));
-            Assert.That(root.SelectSingleNode("Value").InnerText, Does.StartWith(new DateTime(1980, 1, 1).Date.ToString("yyyy-MM-dd")));
+            Assert.That(DateTime.Parse(root.SelectSingleNode("Value").InnerText), Is.EqualTo(new DateTime(1980, 1, 1).Date));
             Assert.That(root.SelectSingleNode("Connector").InnerText, Is.EqualTo("0"));
             Assert.That(root.SelectSingleNode("MatchType").InnerText, Is.EqualTo("0"));
         }
@@ -161,8 +161,8 @@ namespace ExpressionBuilder.Test.Unit
             Assert.That(root.GetAttribute("Type"), Does.StartWith("ExpressionBuilder.Test.Models.Person"));
             Assert.That(root.ChildNodes.Count, Is.EqualTo(1));
             Assert.That(root.FirstChild.Name, Is.EqualTo("Statements"));
-            Assert.That(root.FirstChild.ChildNodes.Count, Is.EqualTo(1));
-            Assert.That(root.FirstChild.FirstChild.ChildNodes.Count, Is.EqualTo(2));
+            Assert.That(root.FirstChild.ChildNodes.Count, Is.EqualTo(2));
+            Assert.That(root.FirstChild.FirstChild.ChildNodes.Count, Is.EqualTo(5));
         }
 
         [TestCase(TestName = "Deserialize XML into Filter object")]
@@ -176,7 +176,7 @@ namespace ExpressionBuilder.Test.Unit
             }
 
             Assert.That(filter, Is.Not.Null);
-            Assert.That(filter.Statements.Count(), Is.EqualTo(1));
+            Assert.That(filter.Statements.Count(), Is.EqualTo(2));
             //Assert.That(filter.Statements.SelectMany(s => s).Count(), Is.EqualTo(2));
         }
 
@@ -189,6 +189,7 @@ namespace ExpressionBuilder.Test.Unit
             sb.Append("      <Operation>6</Operation>");
             sb.Append("      <Value>2</Value>");
             sb.Append("      <Connector>1</Connector>");
+            sb.Append("      <MatchType>0</MatchType>");
             sb.Append("    </FilterStatementOfInt32>");
 
             FilterStatement<int> statement = null;
@@ -214,6 +215,7 @@ namespace ExpressionBuilder.Test.Unit
             sb.Append("      <Operation>0</Operation>");
             sb.Append("      <Value>Male</Value>");
             sb.Append("      <Connector>0</Connector>");
+            sb.Append("      <MatchType>0</MatchType>");
             sb.Append("    </FilterStatementOfPersonGender>");
 
             FilterStatement<PersonGender> statement = null;

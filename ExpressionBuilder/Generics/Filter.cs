@@ -165,7 +165,7 @@ namespace ExpressionBuilder.Generics
         }
 
         /// <summary>
-        /// Removes all <see cref="FilterStatement{TPropertyType}" />, leaving the <see cref="Filter{TClass}" /> empty.
+        /// Removes all <see cref="FilterStatement{TPropertyType}" />'s and <see cref="FilterGroup"/>'s, leaving the <see cref="Filter{TClass}" /> empty.
         /// </summary>
         public void Clear()
         {
@@ -204,7 +204,7 @@ namespace ExpressionBuilder.Generics
             {
                 sB.Append(_statements[index].ToString(ref lastConnector));
                 if (index < _statements.Count - 1)
-                    sB.Append(" " + lastConnector + " ");
+                    sB.Append($" {lastConnector.ToString().ToUpper()} ");
             }
 
 			return sB.ToString();

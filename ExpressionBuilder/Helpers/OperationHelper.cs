@@ -39,12 +39,6 @@ namespace ExpressionBuilder.Helpers
         public List<Operation> SupportedOperations(Type type)
         {
             var supportedOperations = ExtractSupportedOperationsFromAttribute(type);
-            
-            if (type.IsArray)
-            {
-                //The 'In' operation is supported by all types, as long as it's an array...
-                supportedOperations.Add(Operation.In);
-            }
 
             var underlyingNullableType = Nullable.GetUnderlyingType(type);
             if(underlyingNullableType != null)
@@ -86,8 +80,8 @@ namespace ExpressionBuilder.Helpers
             var typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
             var fieldInfo = typeGroup.GetType().GetField(typeGroup.ToString());
             var attrs = fieldInfo.GetCustomAttributes(false);
-            var attr = attrs.FirstOrDefault(a => a is SupportedOperationsAttribute);
-            return (attr as SupportedOperationsAttribute).SupportedOperations;
+            var attr = attrs.FirstOrDefault(a => a is SupportedOperationsAttribute) as SupportedOperationsAttribute;
+            return (attr ).SupportedOperations;
         }
 
         /// <summary>

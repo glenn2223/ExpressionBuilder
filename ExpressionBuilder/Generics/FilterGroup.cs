@@ -59,7 +59,7 @@ namespace ExpressionBuilder.Generics
             {
                 sb.Append(Group[index].ToString(ref LastConnector));
                 if (index < Group.Count - 1)
-                    sb.Append(" " + LastConnector + " ");
+                    sb.Append($" {LastConnector.ToString().ToUpper()} ");
             }
 
             return sb.ToString() + " )";
