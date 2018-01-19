@@ -36,7 +36,6 @@ namespace ExpressionBuilder.Builders
                 { Operation.StartsWith, (member, constant) => Expression.Call(member, startsWithMethod, constant) },
                 { Operation.EndsWith, (member, constant) => Expression.Call(member, endsWithMethod, constant) },
                 { Operation.Between, (member, constant) => Between(member, constant) },
-                { Operation.In, (member, constant) => Contains(member, constant) },
                 { Operation.IsNull, (member, constant) => Expression.Equal(member, Expression.Constant(null)) },
                 { Operation.IsNotNull, (member, constant) => Expression.NotEqual(member, Expression.Constant(null)) },
                 { Operation.IsEmpty, (member, constant) => Expression.Equal(member, Expression.Constant(String.Empty)) },
@@ -124,9 +123,6 @@ namespace ExpressionBuilder.Builders
             Expression resultExpr = null;
             var memberName = propertyName ?? statement.PropertyId;
             Expression member = helper.GetMemberExpression(param, memberName);
-            Expression constant;
-            
-            constant = GetConstantExpression(member, statement);
 
             if (Nullable.GetUnderlyingType(member.Type) != null && statement.Value != null)
             {
@@ -134,7 +130,7 @@ namespace ExpressionBuilder.Builders
                 member = Expression.PropertyOrField(member, "Value");
             }
 
-            var safeStringExpression = GetSafeStringExpression(member, statement, constant);
+            var safeStringExpression = GetSafeStringExpression(member, statement);
             resultExpr = resultExpr != null ? Expression.AndAlso(resultExpr, safeStringExpression) : safeStringExpression;
             resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
@@ -146,13 +142,13 @@ namespace ExpressionBuilder.Builders
             return resultExpr;
         }
 
-        private Expression GetSafeStringExpression(Expression member, IFilterStatement statement, Expression constant)
+        private Expression GetSafeStringExpression(Expression member, IFilterStatement statement)
         {
             var operation = statement.Operation;
 
             if (member.Type != typeof(string))
             {
-                return GetSafeExpression(member, statement, constant);
+                return GetSafeExpression(member, statement);
             }
 
             Expression newMember = member;
@@ -164,34 +160,46 @@ namespace ExpressionBuilder.Builders
             }
 
             Expression resultExpr = operation != Operation.IsNull ?
-                                    GetSafeExpression(newMember, statement, constant) :
-                                    GetSafeExpression(member, statement, constant);
+                                    GetSafeExpression(newMember, statement) :
+                                    GetSafeExpression(member, statement);
 
-            if (member.Type == typeof(string) && operation != Operation.IsNull)
+            if (member.Type == typeof(string) && new[] { Operation.IsNull, Operation.IsNullOrWhiteSpace, Operation.IsNotNullNorWhiteSpace }.Contains(operation) == false)
             {
-                if (operation != Operation.IsNullOrWhiteSpace && operation != Operation.IsNotNullNorWhiteSpace)
-                {
-                    Expression memberIsNotNull = Expression.NotEqual(member, Expression.Constant(null));
-                    resultExpr = Expression.AndAlso(memberIsNotNull, resultExpr);
-                }
+                Expression memberIsNotNull = Expression.NotEqual(member, Expression.Constant(null));
+                resultExpr = Expression.AndAlso(memberIsNotNull, resultExpr);
             }
 
             return resultExpr;
         }
         
-        private Expression GetSafeExpression(Expression member, IFilterStatement statement, Expression constant)
+        private Expression GetSafeExpression(Expression member, IFilterStatement statement)
         {
             var operation = statement.Operation;
+            var matchType = statement.MatchType;
+            var constant = GetConstantExpression(member, statement);
 
-            if (operation != Operation.Between && constant != null && constant.Type == typeof(List<>).MakeGenericType(statement.GetPropertyType()))
+            if (operation != Operation.Between && statement.ValueIsList())
             {
-                var type = statement.GetPropertyType();
-                ParameterExpression listItemParam = Expression.Parameter(type, "y");
-                var lambda = Expression.Lambda(Expressions[operation].Invoke(member, listItemParam), listItemParam);
-                var enumerableType = typeof(Enumerable);
-                var arraySearchInfo = enumerableType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == statement.MatchType.ToString() && m.GetParameters().Count() == 2);
-                arraySearchInfo = arraySearchInfo.MakeGenericMethod(type);
-                return Expression.Call(arraySearchInfo, constant, lambda);
+                if (operation == Operation.EqualTo && matchType == FilterStatementMatchType.Any)
+                    return Expressions[Operation.Contains].Invoke(member, constant);
+                else if (operation == Operation.NotEqualTo && matchType == FilterStatementMatchType.All)
+                    return Expressions[Operation.DoesNotContain].Invoke(member, constant);
+                else
+                {
+                    var runningExpression = null as Expression;
+                    var myList = ValueList(statement);
+                    var connector = matchType == FilterStatementMatchType.Any ? FilterStatementConnector.Or : FilterStatementConnector.And;
+
+                    foreach (var item in myList)
+                    {
+                        Expression loopConstant = Expression.Constant(item);
+                        var loopExpression = Expressions[operation].Invoke(member, loopConstant);
+
+                        runningExpression = runningExpression == null ? loopExpression : CombineExpressions(runningExpression, loopExpression, connector);
+                    }
+
+                    return runningExpression ?? Expression.Constant(true);
+                }
             }
 
             return Expressions[operation].Invoke(member, constant);
@@ -229,21 +237,27 @@ namespace ExpressionBuilder.Builders
             }
             else if (statement.ValueIsList())
             {
-                var type = statement.GetPropertyType();
-                var myList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type), value);
-
-                if (type == typeof(string))
-                    for (var itemIndex = 0; itemIndex < myList.Count; itemIndex++)
-                        myList[itemIndex] = (myList[itemIndex] as string)?.Trim().ToLower();
-
-                value = myList;
-                constant = Expression.Constant(statement.Operation == Operation.Between ? new ArrayList(myList).ToArray(type) : value);
+                var myList = ValueList(statement);
+                constant = Expression.Constant(statement.Operation == Operation.Between ? new ArrayList(myList).ToArray(statement.GetPropertyType()) : myList);
             }
 
             return constant;
         }
 
-        #region Operations 
+        private static IList ValueList(IFilterStatement statement)
+        {
+            var type = statement.GetPropertyType();
+            var myList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type), statement.Value);
+
+            if (type == typeof(string))
+                for (var itemIndex = 0; itemIndex < myList.Count; itemIndex++)
+                    myList[itemIndex] = (myList[itemIndex] as string)?.Trim().ToLower();
+
+            return myList;
+        }
+
+        #region Operations
+
         private Expression Contains(Expression member, Expression expression)
         {
             MethodCallExpression contains = null;
@@ -285,6 +299,7 @@ namespace ExpressionBuilder.Builders
                                     Expression.NotEqual(member, exprNull),
                                     Expression.NotEqual(trimMemberCall, exprEmpty));
         }
-        #endregion
+
+        #endregion Operations
     }
 }
