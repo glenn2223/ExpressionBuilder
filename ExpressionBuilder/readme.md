@@ -19,7 +19,7 @@ Would this help you in any way? Well, if your answer is 'yes', you just made my 
 For a full list of changes and previous revisions, see the [Change Log](ChangeLog.md)
 
 ## Suggestions & Issues
-Feel free to leave comments, and to place issues, if you find errors or realize there is any missing feature.
+Feel free to leave comments, and to place issues, if you find errors or realise there is any missing feature.
 
 # How to use it
 Let us imagine we have classes like this...
