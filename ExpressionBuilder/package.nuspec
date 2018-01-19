@@ -15,6 +15,9 @@
     <copyright>Glenn Marks © 2018</copyright>
     <language>en-GB</language>
     <tags>Expression Builder LINQ Lambda Database IQuery</tags>
+    <dependencies>
+      <dependency id="Microsoft.Net.Compilers" version="1.0.0" />
+    </dependencies>
   </metadata>
   <files>
     <file src="bin\Release\LambdaExpressionBuilder.dll" target="lib\net45" />
