@@ -55,7 +55,7 @@ namespace ExpressionBuilder.Generics
             MatchType = matchType;
 
             var type = value?.GetType() ?? typeof(TPropertyType);
-            var underlyingType = type.IsArray ? type.GetElementType() : type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type) ? type.GenericTypeArguments[0] : type;
+            var underlyingType = type.IsArray ? type.GetElementType() : type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type) ? type.IsConstructedGenericType ? type.GenericTypeArguments[0] : type : type;
 
             if (type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type))
             {
