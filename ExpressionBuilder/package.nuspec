@@ -4,7 +4,7 @@
     <id>$id$-PR</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>Glenn Marks, David Belmont</authors>
+    <authors>Glenn Marks</authors>
     <owners>Glenn Marks</owners>
     <licenseUrl>https://github.com/glenn2223/LambdaExpressionBuilder/blob/Master-2018/LICENSE</licenseUrl>
     <projectUrl>https://github.com/glenn2223/LambdaExpressionBuilder/</projectUrl>
