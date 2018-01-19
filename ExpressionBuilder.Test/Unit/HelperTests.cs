@@ -20,17 +20,11 @@ namespace ExpressionBuilder.Test.Unit
         [TestCase(typeof(Single), TestName = "Get supported operations for number Single")]
         [TestCase(typeof(double), TestName = "Get supported operations for number double")]
         [TestCase(typeof(decimal), TestName = "Get supported operations for number decimal")]
-        [TestCase(typeof(int[]), TestName = "Get supported operations for an array of int")]
         public void SupportedOperationsForNumbers(Type numberType)
         {
             var definitions = new OperationHelper();
             var numberOperations = new List<Operation> { Operation.EqualTo, Operation.NotEqualTo, Operation.GreaterThan, Operation.GreaterThanOrEqualTo,
                                                          Operation.LessThan, Operation.LessThanOrEqualTo, Operation.Between };
-
-            if (numberType.IsArray)
-            {
-                numberOperations.Add(Operation.In);
-            }
 
             var operations = definitions.SupportedOperations(numberType);
             Assert.That(operations, Is.EquivalentTo(numberOperations));
@@ -38,18 +32,12 @@ namespace ExpressionBuilder.Test.Unit
 
         [TestCase(typeof(string), TestName = "Get supported operations for string")]
         [TestCase(typeof(char), TestName = "Get supported operations for char")]
-        [TestCase(typeof(string[]), TestName = "Get supported operations for an array string")]
         public void SupportedOperationsForText(Type textType)
         {
             var definitions = new OperationHelper();
             var textOperations = new List<Operation> { Operation.EqualTo, Operation.Contains, Operation.DoesNotContain, Operation.EndsWith, Operation.NotEqualTo, Operation.StartsWith,
                                                        Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNotNull, Operation.IsNotNullNorWhiteSpace, Operation.IsNull,
                                                        Operation.IsNullOrWhiteSpace };
-
-            if (textType.IsArray)
-            {
-                textOperations.Add(Operation.In);
-            }
 
             var operations = definitions.SupportedOperations(textType);
             Assert.That(operations, Is.EquivalentTo(textOperations));

@@ -12,6 +12,13 @@ namespace ExpressionBuilder.Test.Database
     {
         readonly DbDataContext db = new DbDataContext();
 
+        [SetUp]
+        public void Setup()
+        {
+            if (!db.DatabaseExists())
+                Assert.Ignore("There is no database attatched");
+        }
+
         [TestCase(TestName="Filter without statements")]
         public void FilterWithoutStatements()
         {
@@ -70,7 +77,7 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithFilterStatementWithListOfValues()
         {
             var filter = new Filter<Products>();
-            filter.By("ProductID", Operation.In, new[] { 1, 2, 4, 5 });
+            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: FilterStatementMatchType.Any);
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => new[] { 1, 2, 4, 5 }.Contains(p.ProductID));
             Assert.That(people, Is.EquivalentTo(solution));
@@ -80,7 +87,7 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithFilterStatementWithMatchType()
         {
             var filter = new Filter<Products>();
-            filter.By("ProductID", Operation.In, new[] { 1, 2, 4, 5 });
+            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: FilterStatementMatchType.Any);
             var people = db.Products.Where(filter);
 
             filter = new Filter<Products>();

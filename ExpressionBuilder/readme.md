@@ -14,6 +14,7 @@ Would this help you in any way? Well, if your answer is 'yes', you just made my 
 ## What's New: Version 1.2.0
 * **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
 * **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](#multi-matching)
+* **Removed `Operation.In`** See change log for reasoning
 
 For a full list of changes and previous revisions, see the [Change Log](ChangeLog.md)
 

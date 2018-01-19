@@ -151,14 +151,6 @@ namespace ExpressionBuilder.Common
         IsNotNullNorWhiteSpace,
 
         /// <summary>
-        /// Targets an object in which the provided value is presented in the property's value (as a list).
-        /// </summary>
-        /// <remarks>Accepts one value.</remarks>
-        [Obsolete("Use Operation.Equals with FilterStatementMatchType.Any")]
-        [NumberOfValues(1, true, true)]
-        In,
-
-        /// <summary>
         /// Targets an object in which the property's value does not contain part of the provided value.
         /// </summary>
         /// <remarks>Accepts one value.</remarks>

@@ -138,9 +138,6 @@
   <data name="GreaterThanOrEqualTo" xml:space="preserve">
     <value>maior que ou igual</value>
   </data>
-  <data name="In" xml:space="preserve">
-    <value>em</value>
-  </data>
   <data name="IsEmpty" xml:space="preserve">
     <value>é vazio</value>
   </data>

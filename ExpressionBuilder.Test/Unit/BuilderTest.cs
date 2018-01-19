@@ -108,7 +108,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithFilterStatementWithListOfValues()
         {
         	var filter = new Filter<Person>();
-        	filter.By("Id", Operation.In, new []{ 1, 2, 4, 5 });
+        	filter.By("Id", Operation.EqualTo, new []{ 1, 2, 4, 5 }, matchType: FilterStatementMatchType.Any);
             var people = People.Where(filter);
             var solution = People.Where(p => new[] { 1, 2, 4, 5 }.Contains(p.Id));
             Assert.That(people, Is.EquivalentTo(solution));
@@ -140,7 +140,7 @@ namespace ExpressionBuilder.Test.Unit
         public void BuilderWithBetweenAndListOfValuesFilterStatements()
         {
             var filter = new Filter<Person>();
-            filter.By("Id", Operation.Between, new[] { 2, 6 }).And.By("Id", Operation.In, new[] { 4, 5 });
+            filter.By("Id", Operation.Between, new[] { 2, 6 }).And.By("Id", Operation.EqualTo, new[] { 4, 5 }, matchType: FilterStatementMatchType.Any);
             var people = People.Where(filter);
             var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
                                              new[] { 4, 5 }.Contains(p.Id));

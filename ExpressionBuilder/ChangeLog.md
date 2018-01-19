@@ -4,8 +4,14 @@
 ### Summary
 * **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
 * **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](README.md#multi-match-types)
+* **Removed `Operation.In`** See below for reasoning
 
 ### Changes
+* Removed `Operation.In`
+  * This operation is now obsolete in place of `Operation.EqualTo` with `FilterStatementMatchType.Any`
+  1) I made this decision (in this early stage) to simplify and remove duplicated code.
+  1) As the default 'FilterStatementMatchType' is `All`, you would need to go change all uses of `In` to work as expected (setting `FilterStatementMatchType.Any`).
+  1) Sorry for any inconvenience caused. Hopefully not too much as the download for the original work is quite low
 * Created the `FilterStatementMatchType` enumeration
   * Added "Allowed MatchTypes" to `Operations` and defined usage in `NumberOfValuesAttribute`
 * Created `IFilterGroup`, `FilterGroup` and `IFilterStatementOrGroup` (abstract classes)
