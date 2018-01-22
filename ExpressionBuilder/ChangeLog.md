@@ -16,7 +16,7 @@
 * Namespace changed from `ExpressionBuilder` to `LambdaExpressionBuilder`
   * I decided to make this change, while in beta, because:
   1) After trying to transition from the original work to my LambdaExpressionBuilder, it took the site down breifly
-  2) As per NuGet's spec, the namespace has been bought in line (more or less) witht the NuGet Id
+  2) As per NuGet's spec, the namespace has been brought in line (more or less) with the NuGet Id
 * Created the `FilterStatementMatchType` enumeration
   * Added "Allowed MatchTypes" to `Operations` and defined usage in `NumberOfValuesAttribute`
 * Created `IFilterGroup`, `FilterGroup` and `IFilterStatementOrGroup` (abstract classes)
@@ -56,7 +56,7 @@
 ## Version 1.1.2:
 ### Summary
 * Intial release
-  * The releases version used to improve on. See link at bottom.
+  * The released version used to improve on. See link at the bottom.
 
 # License
 &copy; Copyright 2018 Glenn Marks
