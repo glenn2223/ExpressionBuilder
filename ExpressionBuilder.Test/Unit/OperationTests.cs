@@ -2,8 +2,8 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Resources;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Resources;
 using NUnit.Framework;
 
 namespace ExpressionBuilder.Test.Unit

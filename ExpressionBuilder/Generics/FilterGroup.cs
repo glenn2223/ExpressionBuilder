@@ -5,11 +5,11 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using ExpressionBuilder.Builders;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Interfaces;
+using LambdaExpressionBuilder.Builders;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Interfaces;
 
-namespace ExpressionBuilder.Generics
+namespace LambdaExpressionBuilder.Generics
 {
     /// <summary>
     /// A group of FilterStatements

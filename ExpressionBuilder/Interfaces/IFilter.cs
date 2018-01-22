@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Generics;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Generics;
 
-namespace ExpressionBuilder.Interfaces
+namespace LambdaExpressionBuilder.Interfaces
 {
 	/// <summary>
 	/// Defines a filter from which a expression will be built.

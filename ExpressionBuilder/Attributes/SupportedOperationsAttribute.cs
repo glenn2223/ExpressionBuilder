@@ -1,8 +1,8 @@
-﻿using ExpressionBuilder.Common;
+﻿using LambdaExpressionBuilder.Common;
 using System;
 using System.Collections.Generic;
 
-namespace ExpressionBuilder.Attributes
+namespace LambdaExpressionBuilder.Attributes
 {
     internal class SupportedOperationsAttribute : Attribute
     {

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Generics;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Generics;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 

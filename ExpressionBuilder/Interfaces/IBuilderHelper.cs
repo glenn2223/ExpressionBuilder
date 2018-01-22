@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace ExpressionBuilder.Interfaces
+namespace LambdaExpressionBuilder.Interfaces
 {
     internal interface IBuilderHelper
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using DbContext;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Generics;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Generics;
 using NUnit.Framework;
 
 namespace ExpressionBuilder.Test.Database

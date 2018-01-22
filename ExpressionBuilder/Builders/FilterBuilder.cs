@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Helpers;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Interfaces;
+using LambdaExpressionBuilder.Helpers;
 
-namespace ExpressionBuilder.Builders
+namespace LambdaExpressionBuilder.Builders
 {
 	internal class FilterBuilder
 	{

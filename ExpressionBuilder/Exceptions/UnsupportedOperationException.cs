@@ -1,7 +1,7 @@
-﻿using ExpressionBuilder.Common;
+﻿using LambdaExpressionBuilder.Common;
 using System;
 
-namespace ExpressionBuilder.Exceptions
+namespace LambdaExpressionBuilder.Exceptions
 {
     /// <summary>
     /// Represents an attempt to use an operation not currently supported by a type.

@@ -1,12 +1,12 @@
-﻿using ExpressionBuilder.Attributes;
-using ExpressionBuilder.Interfaces;
+﻿using LambdaExpressionBuilder.Attributes;
+using LambdaExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Resources;
 using System.Collections;
 using System.Linq;
 
-namespace ExpressionBuilder.Resources
+namespace LambdaExpressionBuilder.Resources
 {
     /// <summary>
     /// Collection of <see cref="Property" />.

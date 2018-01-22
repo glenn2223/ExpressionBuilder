@@ -1,5 +1,4 @@
-﻿using ExpressionBuilder.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ExpressionBuilder.WinForms.Models

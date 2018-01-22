@@ -18,6 +18,9 @@
     <dependencies>
       <dependency id="Microsoft.Net.Compilers" version="1.0.0" />
     </dependencies>
+    <releaseNotes>
+      Namespace is `LambdaExpressionBuilder`
+    </releaseNotes>
   </metadata>
   <files>
     <file src="bin\Release\LambdaExpressionBuilder.dll" target="lib\net45" />

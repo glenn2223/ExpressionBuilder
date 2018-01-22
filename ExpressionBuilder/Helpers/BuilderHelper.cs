@@ -1,9 +1,9 @@
-﻿using ExpressionBuilder.Interfaces;
+﻿using LambdaExpressionBuilder.Interfaces;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ExpressionBuilder.Helpers
+namespace LambdaExpressionBuilder.Helpers
 {
 	internal class BuilderHelper : IBuilderHelper
 	{

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Generics;
-using ExpressionBuilder.Interfaces;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Generics;
+using LambdaExpressionBuilder.Interfaces;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 

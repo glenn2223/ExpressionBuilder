@@ -107,15 +107,20 @@
     <EmbeddedResource Include="Resources\Operations.pt-BR.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Operations.pt-BR.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>LambdaExpressionBuilder.Test.Resources</CustomToolNamespace>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Operations.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Operations.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>LambdaExpressionBuilder.Test.Resources</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Person.pt-BR.resx" />
+    <EmbeddedResource Include="Resources\Person.pt-BR.resx">
+      <CustomToolNamespace>LambdaExpressionBuilder.Test.Resources</CustomToolNamespace>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Person.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Person.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>LambdaExpressionBuilder.Test.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

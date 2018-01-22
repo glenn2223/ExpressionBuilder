@@ -1,8 +1,8 @@
-﻿using ExpressionBuilder.Builders;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Exceptions;
-using ExpressionBuilder.Helpers;
-using ExpressionBuilder.Interfaces;
+﻿using LambdaExpressionBuilder.Builders;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Exceptions;
+using LambdaExpressionBuilder.Helpers;
+using LambdaExpressionBuilder.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Xml;
 
-namespace ExpressionBuilder.Generics
+namespace LambdaExpressionBuilder.Generics
 {
     /// <summary>
 	/// Defines how a property should be filtered.

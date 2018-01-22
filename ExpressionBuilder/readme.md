@@ -1,4 +1,4 @@
-# Expression Builder
+# Lambda Expression Builder
 In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
 
 Would this help you in any way? Well, if your answer is 'yes', you just made my day a bit better. :smile:
@@ -147,16 +147,16 @@ While compiling the filter into a lambda expression, the expression builder will
 <configuration>
   ...
   <configSections>
-    <section name="ExpressionBuilder" type="ExpressionBuilder.Configuration.ExpressionBuilderConfig, ExpressionBuilder" />
+    <section name="LambdaExpressionBuilder" type="LambdaExpressionBuilder.Configuration.ExpressionBuilderConfig, LambdaExpressionBuilder" />
   </configSections>
 
   ...
 
-  <ExpressionBuilder>
+  <LambdaExpressionBuilder>
     <SupportedTypes>
       <add typeGroup="Date" type="System.DateTimeOffset" />
     </SupportedTypes>
-  </ExpressionBuilder>
+  </LambdaExpressionBuilder>
   ...
 </configuration>
 ```

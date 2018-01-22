@@ -1,7 +1,7 @@
-﻿using ExpressionBuilder.Common;
-using ExpressionBuilder.Interfaces;
+﻿using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Interfaces;
 
-namespace ExpressionBuilder.Generics
+namespace LambdaExpressionBuilder.Generics
 {
     /// <summary>
     /// Connects to FilterStatement together.

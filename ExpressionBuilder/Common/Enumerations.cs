@@ -1,7 +1,6 @@
-﻿using ExpressionBuilder.Attributes;
-using System;
+﻿using LambdaExpressionBuilder.Attributes;
 
-namespace ExpressionBuilder.Common
+namespace LambdaExpressionBuilder.Common
 {
     /// <summary>
     /// Defines how the filter statements will be connected to each other.

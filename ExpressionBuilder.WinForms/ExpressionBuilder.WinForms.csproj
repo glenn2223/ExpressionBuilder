@@ -88,7 +88,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\Group.resx">
@@ -106,6 +108,7 @@
     <EmbeddedResource Include="Resources\Person.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Person.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

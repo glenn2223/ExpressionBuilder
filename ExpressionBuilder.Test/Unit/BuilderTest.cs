@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Exceptions;
-using ExpressionBuilder.Generics;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Exceptions;
+using LambdaExpressionBuilder.Generics;
 using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 

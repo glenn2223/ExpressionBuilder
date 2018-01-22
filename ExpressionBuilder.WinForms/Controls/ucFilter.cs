@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Helpers;
-using ExpressionBuilder.Resources;
-using ExpressionBuilder.Interfaces;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Helpers;
+using LambdaExpressionBuilder.Resources;
+using LambdaExpressionBuilder.Interfaces;
 using System.Collections.Generic;
 using System.Collections;
 

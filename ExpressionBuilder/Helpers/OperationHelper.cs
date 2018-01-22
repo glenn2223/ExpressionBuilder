@@ -1,13 +1,13 @@
-﻿using ExpressionBuilder.Attributes;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Configuration;
-using ExpressionBuilder.Interfaces;
+﻿using LambdaExpressionBuilder.Attributes;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Configuration;
+using LambdaExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 
-namespace ExpressionBuilder.Helpers
+namespace LambdaExpressionBuilder.Helpers
 {
     /// <summary>
     /// Useful methods regarding <seealso cref="Operation"></seealso>.

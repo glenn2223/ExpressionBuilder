@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExpressionBuilder.Attributes
+namespace LambdaExpressionBuilder.Attributes
 {
     internal class NumberOfValuesAttribute : Attribute
     {

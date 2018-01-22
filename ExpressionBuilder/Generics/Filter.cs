@@ -1,16 +1,16 @@
-﻿using ExpressionBuilder.Builders;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Interfaces;
+﻿using LambdaExpressionBuilder.Builders;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
-using ExpressionBuilder.Helpers;
+using LambdaExpressionBuilder.Helpers;
 using System.Linq;
 using System.Text;
 
-namespace ExpressionBuilder.Generics
+namespace LambdaExpressionBuilder.Generics
 {
     /// <summary>
     /// Aggregates <see cref="FilterStatement{TPropertyType}" /> and build them into a LINQ expression.

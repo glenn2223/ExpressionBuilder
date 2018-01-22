@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace ExpressionBuilder.Resources
+namespace LambdaExpressionBuilder.Resources
 {
     /// <summary>
     /// Provides information on the property to the Expression Builder.

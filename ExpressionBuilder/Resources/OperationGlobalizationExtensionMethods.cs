@@ -1,7 +1,7 @@
-﻿using ExpressionBuilder.Common;
+﻿using LambdaExpressionBuilder.Common;
 using System.Resources;
 
-namespace ExpressionBuilder.Resources
+namespace LambdaExpressionBuilder.Resources
 {
     /// <summary>
     /// Extension methods for <see cref="Operation" />.

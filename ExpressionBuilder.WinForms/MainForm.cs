@@ -1,11 +1,11 @@
-﻿using System;
+﻿using ExpressionBuilder.WinForms.Controls;
+using ExpressionBuilder.WinForms.Models;
+using LambdaExpressionBuilder.Generics;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using ExpressionBuilder.WinForms.Controls;
-using ExpressionBuilder.Generics;
-using ExpressionBuilder.WinForms.Models;
-using System.Drawing;
 
 namespace ExpressionBuilder.WinForms
 {

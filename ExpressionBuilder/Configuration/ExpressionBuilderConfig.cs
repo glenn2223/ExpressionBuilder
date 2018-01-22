@@ -1,12 +1,12 @@
-﻿using ExpressionBuilder.Common;
+﻿using LambdaExpressionBuilder.Common;
 using System;
 using System.Configuration;
 
-namespace ExpressionBuilder.Configuration
+namespace LambdaExpressionBuilder.Configuration
 {
     internal class ExpressionBuilderConfig : ConfigurationSection
     {
-        public const string SectionName = "ExpressionBuilder";
+        public const string SectionName = "LambdaExpressionBuilder";
 
         private const string SupportedTypeCollectionName = "SupportedTypes";
 

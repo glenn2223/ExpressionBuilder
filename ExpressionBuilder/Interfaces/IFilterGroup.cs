@@ -1,4 +1,4 @@
-﻿namespace ExpressionBuilder.Interfaces
+﻿namespace LambdaExpressionBuilder.Interfaces
 {
     using System.Collections.Generic;
 

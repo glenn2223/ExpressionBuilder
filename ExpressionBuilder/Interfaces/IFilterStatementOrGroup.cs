@@ -1,7 +1,7 @@
-﻿namespace ExpressionBuilder.Interfaces
+﻿namespace LambdaExpressionBuilder.Interfaces
 {
-    using ExpressionBuilder.Builders;
-    using ExpressionBuilder.Common;
+    using LambdaExpressionBuilder.Builders;
+    using LambdaExpressionBuilder.Common;
     using System.Linq.Expressions;
     using System.Xml;
     using System.Xml.Schema;

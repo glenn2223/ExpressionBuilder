@@ -1,8 +1,8 @@
-﻿using ExpressionBuilder.Common;
-using ExpressionBuilder.Helpers;
+﻿using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Helpers;
 using System;
 
-namespace ExpressionBuilder.Exceptions
+namespace LambdaExpressionBuilder.Exceptions
 {
     /// <summary>
     /// Represents an attempt to use an operation providing the wrong number of values.

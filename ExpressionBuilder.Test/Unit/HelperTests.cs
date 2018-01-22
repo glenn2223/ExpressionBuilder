@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ExpressionBuilder.Common;
-using ExpressionBuilder.Helpers;
+using LambdaExpressionBuilder.Common;
+using LambdaExpressionBuilder.Helpers;
 using NUnit.Framework;
 
 namespace ExpressionBuilder.Test.Unit

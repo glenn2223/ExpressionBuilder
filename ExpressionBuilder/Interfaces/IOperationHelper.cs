@@ -1,8 +1,8 @@
-﻿using ExpressionBuilder.Common;
+﻿using LambdaExpressionBuilder.Common;
 using System;
 using System.Collections.Generic;
 
-namespace ExpressionBuilder.Interfaces
+namespace LambdaExpressionBuilder.Interfaces
 {
     /// <summary>
     /// Useful methods regarding <seealso cref="Operation"></seealso>.
