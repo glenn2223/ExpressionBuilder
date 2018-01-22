@@ -5,7 +5,7 @@
 * **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
 * **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](README.md#multi-match-types)
 * **Removed `Operation.In`** See below for reasoning
-* Namespace changed from `ExpressionBuilder` to `LambdaExpressionBuilder`
+* Namespace changed from `ExpressionBuilder` to `LambdaExpressionBuilder`. Only important to people transitioning from original work (it does help you though)
 
 ### Changes
 * Removed `Operation.In`
