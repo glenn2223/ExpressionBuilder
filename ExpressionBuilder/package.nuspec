@@ -19,7 +19,8 @@
       <dependency id="Microsoft.Net.Compilers" version="1.0.0" />
     </dependencies>
     <releaseNotes>
-      Namespace is `LambdaExpressionBuilder`
+      PLEASE PREP FOR NEW ENUM NAMES
+      Two operation "type name"'s have been changed. "FilterStatementConnector" is now "Connector". "FilterStatementMatchType" is now "MatchType".
     </releaseNotes>
   </metadata>
   <files>
