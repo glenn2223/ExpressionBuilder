@@ -24,7 +24,7 @@ namespace LambdaExpressionBuilder.Interfaces
         /// <param name="operation">Express the interaction between the property and the constant value.</param>
         /// <param name="connector">Establishes how this filter statement will connect to the next one.</param>
         /// <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
-        IFilterStatementConnection By(string propertyId, Operation operation, FilterStatementConnector connector = FilterStatementConnector.And);
+        IFilterStatementConnection By(string propertyId, Operation operation, Connector connector = Connector.And);
         /// <summary>
         /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
         /// </summary>
@@ -35,7 +35,7 @@ namespace LambdaExpressionBuilder.Interfaces
         /// <param name="connector">Establishes how this filter statement will connect to the next one.</param>
         /// <param name="matchType">Establishes how the IList values will be matched to the property</param>
         /// <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
-        IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All);
+        IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, TPropertyType value, Connector connector = Connector.And, MatchType matchType = MatchType.All);
         /// <summary>
         /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
         /// </summary>
@@ -46,7 +46,7 @@ namespace LambdaExpressionBuilder.Interfaces
         /// <param name="connector">Establishes how this filter statement will connect to the next one.</param>
         /// <param name="matchType">Establishes how the IList values will be matched to the property</param>
         /// <returns>A FilterStatementConnection object that defines how this statement will be connected to the next one.</returns>
-        IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, IEnumerable<TPropertyType> values, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All);
+        IFilterStatementConnection By<TPropertyType>(string propertyId, Operation operation, IEnumerable<TPropertyType> values, Connector connector = Connector.And, MatchType matchType = MatchType.All);
         /// <summary>
         /// Starts a new group denoting that every subsequent filter statement should be grouped together (as if using a parenthesis).
         /// </summary>

@@ -12,7 +12,7 @@ namespace LambdaExpressionBuilder.Interfaces
 		/// <summary>
 		/// Establishes how this filter statement will connect to the next one. 
 		/// </summary>
-		public FilterStatementConnector Connector { get; set; }
+		public Connector Connector { get; set; }
         /// <summary>
         /// Property identifier conventionalized by for the Expression Builder.
         /// </summary>
@@ -28,7 +28,7 @@ namespace LambdaExpressionBuilder.Interfaces
         /// <summary>
         /// Establish how the values list will be matched to the property.
         /// </summary>
-        public FilterStatementMatchType MatchType { get; set; }
+        public MatchType MatchType { get; set; }
 
         /// <summary>
         /// Get the PropertyType accosiated to this member

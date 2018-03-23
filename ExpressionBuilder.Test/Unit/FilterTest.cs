@@ -20,7 +20,7 @@ namespace ExpressionBuilder.Test.Unit
 			Assert.That(((IFilterStatement)filter.Statements.Last()).PropertyId, Is.EqualTo("Name"));
 			Assert.That(((IFilterStatement)filter.Statements.Last()).Operation, Is.EqualTo(Operation.Contains));
 			Assert.That(((IFilterStatement)filter.Statements.Last()).Value, Is.EqualTo("John"));
-			Assert.That(((IFilterStatement)filter.Statements.Last()).Connector, Is.EqualTo(FilterStatementConnector.And));
+			Assert.That(((IFilterStatement)filter.Statements.Last()).Connector, Is.EqualTo(Connector.And));
 		}
 		
 		[TestCase(TestName="Should be able to remove all statements of a filter")]

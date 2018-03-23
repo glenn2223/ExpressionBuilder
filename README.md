@@ -10,11 +10,14 @@ Would this help you in any way? Well, if your answer is 'yes', you just made my 
 * Built-in null-checks
 * Built-in XML serialization
 * Globalization support
+* Group expressions for more complex scenarios
+* Match a list of values (i.e. A first name that matches any of: "John", "Jess") [See Documentation](#multi-match-types)
 
-## What's New: Version 1.2.0
-* **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
-* **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](#multi-match-types)
-* **Removed `Operation.In`** See change log for reasoning
+## What's New: Version 1.2.1
+**PLEASE NOTE THIS IS A BREAKING CHANGE**
+* **Simplified enumerables** - To make it easier to type, and easier to read, I have simplified 2 enums. _This is the "breaking change" I was refering to._
+* **Operations & default match-types** - Operations now have a default MatchType. This is the match-type that will be called by default.
+* Bug fixes and other minor improvements
 
 For a full list of changes and previous revisions, see the [Change Log](ExpressionBuilder/ChangeLog.md)
 

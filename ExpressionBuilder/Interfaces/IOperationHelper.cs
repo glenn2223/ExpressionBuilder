@@ -19,8 +19,8 @@ namespace LambdaExpressionBuilder.Interfaces
         /// Retrieves the exactly number of values acceptable by a specific operation.
         /// </summary>
         /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
-        /// <param name="matchType">See <see cref="Operation" /> for which <see cref="FilterStatementMatchType" /> are allowed.</param>
+        /// <param name="matchType">See <see cref="Operation" /> for which <see cref="MatchType" /> are allowed.</param>
         /// <returns></returns>
-        int NumberOfValuesAcceptable(Operation operation, FilterStatementMatchType matchType);
+        int NumberOfValuesAcceptable(Operation operation, MatchType matchType);
     }
 }

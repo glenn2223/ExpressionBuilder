@@ -19,13 +19,13 @@
         /// <param name="connector"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        internal abstract Expression Build(ParameterExpression param, ref FilterStatementConnector connector, FilterBuilder builder);
+        internal abstract Expression Build(ParameterExpression param, ref Connector connector, FilterBuilder builder);
         /// <summary>
         /// String version of the filter Statement or Group
         /// </summary>
         /// <param name="LastConnector"></param>
         /// <returns></returns>
-		public abstract string ToString(ref FilterStatementConnector LastConnector);
+		public abstract string ToString(ref Connector LastConnector);
 
         /// <summary>
         /// 

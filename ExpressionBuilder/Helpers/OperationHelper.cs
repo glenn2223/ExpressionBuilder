@@ -88,36 +88,37 @@ namespace LambdaExpressionBuilder.Helpers
         /// Retrieves the exactly number of values acceptable by a specific operation.
         /// </summary>
         /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
-        /// <param name="matchType">See <see cref="Operation" /> for which <see cref="FilterStatementMatchType" /> are allowed.</param>
+        /// <param name="matchType">See <see cref="Operation" /> for which <see cref="MatchType" /> are allowed.</param>
         /// <returns></returns>
-        public int NumberOfValuesAcceptable(Operation operation, FilterStatementMatchType matchType)
+        public int NumberOfValuesAcceptable(Operation operation, MatchType matchType)
         {
             var attr = FetchAttribute(operation);
 
-            switch (matchType)
-            {
-                case FilterStatementMatchType.Any:
-                    return attr.AllowMatchAny ? -1 : attr.NumberOfValues;
-
-                default:
-                    return attr.AllowMatchAll ? -1 : attr.NumberOfValues;
-            }
+            if (matchType == MatchType.Default)
+                matchType = attr.DefaultMatchType;
+            
+            return attr.NumberOfValues != 0 && (matchType == attr.DefaultMatchType || attr.AllowOtherMatchType) ? -1 : attr.NumberOfValues;
         }
 
         /// <summary>
-        /// Retrieves the <see cref="FilterStatementMatchType"/>'s acceptable by a specific operation.
+        /// Retrieves the <see cref="MatchType"/>'s acceptable by a specific operation.
         /// </summary>
         /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
         /// <returns></returns>
-        public List<FilterStatementMatchType> AllowedMatchTypes(Operation operation)
+        public List<MatchType> AllowedMatchTypes(Operation operation)
         {
             var attr = FetchAttribute(operation);
-            var allowedTypes = new List<FilterStatementMatchType>();
+            var allowedTypes = new List<MatchType>();
 
-            if (attr?.AllowMatchAll == true)
-                allowedTypes.Add(FilterStatementMatchType.All);
-            if (attr?.AllowMatchAny == true)
-                allowedTypes.Add(FilterStatementMatchType.Any);
+            if (attr != null && attr.NumberOfValues != 0)
+            {
+                allowedTypes.Add(attr.DefaultMatchType);
+                if (attr.AllowOtherMatchType == true)
+                    if (attr.DefaultMatchType == MatchType.All)
+                        allowedTypes.Add(MatchType.Any);
+                    else
+                        allowedTypes.Add(MatchType.All);
+            }
 
             return allowedTypes;
         }
@@ -131,19 +132,19 @@ namespace LambdaExpressionBuilder.Helpers
         {
             var attr = FetchAttribute(operation);
 
-            return (attr as NumberOfValuesAttribute).NumberOfValues;
+            return (attr as OperationSettingsAttribute).NumberOfValues;
         }
 
         /// <summary>
-        /// Retrieves the <see cref="NumberOfValuesAttribute"/> from an operation.
+        /// Retrieves the <see cref="OperationSettingsAttribute"/> from an operation.
         /// </summary>
         /// <param name="operation">See <see cref="Operation" /> for which the number of values acceptable should be verified.</param>
         /// <returns></returns>
-        private static NumberOfValuesAttribute FetchAttribute(Operation operation)
+        private static OperationSettingsAttribute FetchAttribute(Operation operation)
         {
             var fieldInfo = operation.GetType().GetField(operation.ToString());
             var attrs = fieldInfo.GetCustomAttributes(false);
-            return attrs.FirstOrDefault(a => a is NumberOfValuesAttribute) as NumberOfValuesAttribute;
+            return attrs.FirstOrDefault(a => a is OperationSettingsAttribute) as OperationSettingsAttribute;
         }
     }
 }

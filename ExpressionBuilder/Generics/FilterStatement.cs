@@ -23,31 +23,10 @@ namespace LambdaExpressionBuilder.Generics
         /// </summary>
         /// <param name="propertyId"></param>
         /// <param name="operation"></param>
-        /// <param name="values"></param>
-        /// <param name="connector"></param>
-        /// <param name="matchType"></param>
-		public FilterStatement(string propertyId, Operation operation, IEnumerable<TPropertyType> values, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
-        {
-            var constructedListType = typeof(List<>).MakeGenericType(values.FirstOrDefault()?.GetType() ?? typeof(TPropertyType));
-
-            PropertyId = propertyId;
-            Connector = connector;
-            Operation = operation;
-            Value = values != null ? Activator.CreateInstance(constructedListType, values) : null;
-            MatchType = matchType;
-
-            Validate();
-        }
-
-        /// <summary>
-        /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
-        /// </summary>
-        /// <param name="propertyId"></param>
-        /// <param name="operation"></param>
         /// <param name="value"></param>
         /// <param name="connector"></param>
         /// <param name="matchType"></param>
-        public FilterStatement(string propertyId, Operation operation, TPropertyType value, FilterStatementConnector connector = FilterStatementConnector.And, FilterStatementMatchType matchType = FilterStatementMatchType.All)
+        public FilterStatement(string propertyId, Operation operation, TPropertyType value, Connector connector = Connector.And, MatchType matchType = MatchType.Default)
 		{
             PropertyId = propertyId;
 			Connector = connector;
@@ -66,6 +45,27 @@ namespace LambdaExpressionBuilder.Generics
 			{
 				Value = value;
 			}
+
+            Validate();
+        }
+
+        /// <summary>
+        /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
+        /// </summary>
+        /// <param name="propertyId"></param>
+        /// <param name="operation"></param>
+        /// <param name="values"></param>
+        /// <param name="connector"></param>
+        /// <param name="matchType"></param>
+		public FilterStatement(string propertyId, Operation operation, IEnumerable<TPropertyType> values, Connector connector = Connector.And, MatchType matchType = MatchType.Default)
+        {
+            var constructedListType = typeof(List<>).MakeGenericType(values?.FirstOrDefault()?.GetType() ?? typeof(TPropertyType));
+
+            PropertyId = propertyId;
+            Connector = connector;
+            Operation = operation;
+            Value = values != null ? Activator.CreateInstance(constructedListType, values) : null;
+            MatchType = matchType;
 
             Validate();
         }
@@ -160,7 +160,7 @@ namespace LambdaExpressionBuilder.Generics
         /// <param name="connector"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        internal override Expression Build(ParameterExpression param, ref FilterStatementConnector connector, FilterBuilder builder)
+        internal override Expression Build(ParameterExpression param, ref Connector connector, FilterBuilder builder)
         {
             return builder.GetPartialExpression(param, ref connector, this);
         }
@@ -177,6 +177,8 @@ namespace LambdaExpressionBuilder.Generics
             {
                 if (Operation == Operation.Between)
                     value = string.Join(" AND ", valueList);
+                else if (valueList.Count() == 1)
+                    value = valueList.First();
                 else
                     value = MatchType + " ( \"" + string.Join("\", \"", valueList) + "\" )";
             }
@@ -196,7 +198,7 @@ namespace LambdaExpressionBuilder.Generics
         /// String representation of <see cref="FilterStatement{TPropertyType}" />.
         /// </summary>
         /// <returns></returns>
-		public override string ToString(ref FilterStatementConnector LastConnector)
+		public override string ToString(ref Connector LastConnector)
         {
             LastConnector = Connector;
 
@@ -244,8 +246,8 @@ namespace LambdaExpressionBuilder.Generics
                         Value = Convert.ChangeType(reader.ReadElementContentAsString(), type);
                 }
             }
-            Connector = (FilterStatementConnector)Enum.Parse(typeof(FilterStatementConnector), reader.ReadElementContentAsString());
-            MatchType = (FilterStatementMatchType)Enum.Parse(typeof(FilterStatementMatchType), reader.ReadElementContentAsString());
+            Connector = (Connector)Enum.Parse(typeof(Connector), reader.ReadElementContentAsString());
+            MatchType = (MatchType)Enum.Parse(typeof(MatchType), reader.ReadElementContentAsString());
         }
 
         /// <summary>

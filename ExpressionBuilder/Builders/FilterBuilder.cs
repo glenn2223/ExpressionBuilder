@@ -56,7 +56,7 @@ namespace LambdaExpressionBuilder.Builders
         {
             var param = Expression.Parameter(typeof(T), "x");
             Expression expression = null;
-            var connector = FilterStatementConnector.And;
+            var connector = Connector.And;
 
             expression = new FilterBuilder(new BuilderHelper()).GetPartialExpression(param, ref connector, filter.Statements);
             
@@ -65,12 +65,12 @@ namespace LambdaExpressionBuilder.Builders
             return Expression.Lambda<Func<T, bool>>(expression, param);
         }
 
-        internal Expression GetPartialExpression(ParameterExpression param, ref FilterStatementConnector connector, IEnumerable<IFilterStatementOrGroup> statementGroup)
+        internal Expression GetPartialExpression(ParameterExpression param, ref Connector connector, IEnumerable<IFilterStatementOrGroup> statementGroup)
         {
             Expression expression = null;
             foreach (var statementFilterOrGroup in statementGroup)
             {
-                var statementGroupConnector = FilterStatementConnector.And;
+                var statementGroupConnector = Connector.And;
                 Expression partialExpr = statementFilterOrGroup.Build(param, ref statementGroupConnector, this);
 
                 expression = expression == null ? partialExpr : CombineExpressions(expression, partialExpr, connector);
@@ -80,7 +80,7 @@ namespace LambdaExpressionBuilder.Builders
             return expression;
         }
 
-        internal Expression GetPartialExpression(ParameterExpression param, ref FilterStatementConnector connector, IFilterStatement statement)
+        internal Expression GetPartialExpression(ParameterExpression param, ref Connector connector, IFilterStatement statement)
         {
             Expression expr = null;
             if (IsList(statement))
@@ -98,9 +98,9 @@ namespace LambdaExpressionBuilder.Builders
             return statement.PropertyId.Contains("[") && statement.PropertyId.Contains("]");
         }
 
-        internal static Expression CombineExpressions(Expression expr1, Expression expr2, FilterStatementConnector connector)
+        internal static Expression CombineExpressions(Expression expr1, Expression expr2, Connector connector)
         {
-            return connector == FilterStatementConnector.And ? Expression.AndAlso(expr1, expr2) : Expression.OrElse(expr1, expr2);
+            return connector == Connector.And ? Expression.AndAlso(expr1, expr2) : Expression.OrElse(expr1, expr2);
         }
 
         private Expression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
@@ -180,15 +180,15 @@ namespace LambdaExpressionBuilder.Builders
 
             if (operation != Operation.Between && statement.ValueIsList())
             {
-                if (operation == Operation.EqualTo && matchType == FilterStatementMatchType.Any)
+                if (operation == Operation.EqualTo && matchType == MatchType.Any)
                     return Expressions[Operation.Contains].Invoke(member, constant);
-                else if (operation == Operation.NotEqualTo && matchType == FilterStatementMatchType.All)
+                else if (operation == Operation.NotEqualTo && matchType == MatchType.All)
                     return Expressions[Operation.DoesNotContain].Invoke(member, constant);
                 else
                 {
                     var runningExpression = null as Expression;
                     var myList = ValueList(statement);
-                    var connector = matchType == FilterStatementMatchType.Any ? FilterStatementConnector.Or : FilterStatementConnector.And;
+                    var connector = matchType == MatchType.Any ? Connector.Or : Connector.And;
 
                     foreach (var item in myList)
                     {
@@ -277,7 +277,7 @@ namespace LambdaExpressionBuilder.Builders
             var left = Expressions[Operation.GreaterThanOrEqualTo].Invoke(member, Expression.ArrayIndex(constantArray, Expression.Constant(0)));
             var right = Expressions[Operation.LessThanOrEqualTo].Invoke(member, Expression.ArrayIndex(constantArray, Expression.Constant(1)));
 
-            return CombineExpressions(left, right, FilterStatementConnector.And);
+            return CombineExpressions(left, right, Connector.And);
         }
 
         private Expression IsNullOrWhiteSpace(Expression member)

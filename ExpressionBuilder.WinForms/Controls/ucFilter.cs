@@ -46,13 +46,13 @@ namespace ExpressionBuilder.WinForms.Controls
 			}
 		}
 
-        public FilterStatementMatchType MatchType
+        public MatchType MatchType
         {
             get
             {
                 if (cbMatchTypes.Items.Count == 0 || cbMatchTypes.SelectedItem == null)
-                    return FilterStatementMatchType.All;
-                return (FilterStatementMatchType)Enum.Parse(typeof(FilterStatementMatchType), cbMatchTypes.SelectedItem.ToString());
+                    return MatchType.All;
+                return (MatchType)Enum.Parse(typeof(MatchType), cbMatchTypes.SelectedItem.ToString());
             }
         }
 
@@ -96,9 +96,9 @@ namespace ExpressionBuilder.WinForms.Controls
             return isValid;
         }
 
-        public FilterStatementConnector Conector
+        public Connector Conector
 		{
-			get { return (FilterStatementConnector)Enum.Parse(typeof(FilterStatementConnector), cbConector.Text); }
+			get { return (Connector)Enum.Parse(typeof(Connector), cbConector.Text); }
 		}
 		
 		public UcFilter()

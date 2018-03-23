@@ -32,7 +32,7 @@ namespace LambdaExpressionBuilder.Generics
         /// <param name="connector"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        internal override Expression Build(ParameterExpression param, ref FilterStatementConnector connector, FilterBuilder builder)
+        internal override Expression Build(ParameterExpression param, ref Connector connector, FilterBuilder builder)
         {
             return builder.GetPartialExpression(param, ref connector, Group);
         }
@@ -43,7 +43,7 @@ namespace LambdaExpressionBuilder.Generics
         /// <returns></returns>
 		public override string ToString()
         {
-            var forgetMe = FilterStatementConnector.And;
+            var forgetMe = Connector.And;
             return ToString(ref forgetMe);
         }
 
@@ -51,7 +51,7 @@ namespace LambdaExpressionBuilder.Generics
         /// String representation of <see cref="FilterGroup" />.
         /// </summary>
         /// <returns></returns>
-		public override string ToString(ref FilterStatementConnector LastConnector)
+		public override string ToString(ref Connector LastConnector)
         {
             var sb = new StringBuilder("( ");
 

@@ -1,6 +1,30 @@
 # Change Log
 
-## Version 1.2.0: [CURRENT RELEASE]
+## Version 1.2.1: [CURRENT RELEASE]
+### Summary
+**PLEASE NOTE THIS IS A BREAKING CHANGE**
+* **Simplified enumerables** - To make it easier to type, and easier to read, I have simplified 2 enums. _This is the "breaking change" I was refering to._
+* **Operations & default match-types** - Operations now have a default MatchType. This is the match-type that will be called by default.
+* Bug fixes and other minor improvements
+
+### Changes
+* Simplified Enumerables
+  * `FilterStatementConnector` is now just `Connector`
+  * `FilterStatementMatchType` is now just `MatchType`
+* Removed `NumberOfValuesAttribute` in place of `OperationSettingsAttribute`
+  * I renamed the attribute so it makes more sense against the fields within it
+* Bug fixes
+  * Creating a `FilterStatement`, using it's IEnumerable method and a value of `NULL` throws an exception. Catching the `Null` so it works in the existing null-coalescing operator.
+* Minor improvements
+  * `Filter.By` and `FilterStatement`: In a poor attempt to force IEnumerables to fire the correct method, I placed this function first. This fires it only when it has a value of `NULL` which is not it's intended purpose. I have moved it down, but still kept it.
+  * The `FilterStatement` `ToString` method has been tweaked slightly so a list of 1 value reads as just a value (no `MatchType` mentioned).
+
+### Minor Changes (Not Affecting NuGet Package)
+* `Tests` and `WinForm` have had their enumerable type names changed to match the new, simpler, ones
+
+---
+
+## Version 1.2.0:
 ### Summary
 * **Support for very complex expressions** Allowing groups within groups as well as a close group functionality ([Improvement on the previous grouping](https://github.com/dbelmont/ExpressionBuilder/issues/10))
 * **Added multi-match types** Match a list of values (i.e. A name that contains any of: "John", "Jess") [See Documentation](README.md#multi-match-types)
@@ -52,6 +76,7 @@
 * Added changelog
 * Revised README to mention new updates and extra functionality (also added new image to assist the change)
 
+---
 
 ## Version 1.1.2:
 ### Summary

@@ -54,7 +54,7 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithPropertyChainFilterStatements()
         {
             var filter = new Filter<Products>();
-            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", FilterStatementConnector.Or);
+            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", Connector.Or);
             filter.By("Categories.CategoryName.Length", Operation.GreaterThanOrEqualTo, 12);
             var products = db.Products.Where(filter);
             var solution = db.Products.Where(p => (p.Categories != null && p.Categories.CategoryName != null && p.Categories.CategoryName.Trim().ToLower().Equals("beverages")) ||
@@ -77,7 +77,7 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithFilterStatementWithListOfValues()
         {
             var filter = new Filter<Products>();
-            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: FilterStatementMatchType.Any);
+            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: MatchType.Any);
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => new[] { 1, 2, 4, 5 }.Contains(p.ProductID));
             Assert.That(people, Is.EquivalentTo(solution));
@@ -87,11 +87,11 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithFilterStatementWithMatchType()
         {
             var filter = new Filter<Products>();
-            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: FilterStatementMatchType.Any);
+            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: MatchType.Any);
             var people = db.Products.Where(filter);
 
             filter = new Filter<Products>();
-            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: FilterStatementMatchType.Any);
+            filter.By("ProductID", Operation.EqualTo, new[] { 1, 2, 4, 5 }, matchType: MatchType.Any);
             var peopleOld = db.Products.Where(filter);
             Assert.That(people, Is.EquivalentTo(peopleOld));
         }
@@ -148,7 +148,7 @@ namespace ExpressionBuilder.Test.Database
             var filter = new Filter<Products>();
             filter.By("SupplierID", Operation.EqualTo, 1);
             filter.StartGroup();
-            filter.By("CategoryID", Operation.EqualTo, 1, connector: FilterStatementConnector.Or);
+            filter.By("CategoryID", Operation.EqualTo, 1, connector: Connector.Or);
             filter.By("CategoryID", Operation.EqualTo, 2);
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => p.SupplierID == 1 && (p.CategoryID == 1 || p.CategoryID == 2));

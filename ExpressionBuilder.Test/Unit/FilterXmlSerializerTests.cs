@@ -58,7 +58,7 @@ namespace ExpressionBuilder.Test.Unit
                     "Id",
                     Operation.GreaterThanOrEqualTo,
                     2,
-                    FilterStatementConnector.Or
+                    Connector.Or
                 );
                 serializer.Serialize(writer, statement);
                 writer.Flush();
@@ -89,7 +89,7 @@ namespace ExpressionBuilder.Test.Unit
                     "Gender",
                     Operation.EqualTo,
                     PersonGender.Male,
-                    FilterStatementConnector.And
+                    Connector.And
                 );
                 serializer.Serialize(writer, statement);
                 writer.Flush();
@@ -120,7 +120,7 @@ namespace ExpressionBuilder.Test.Unit
                     "Birth.Date",
                     Operation.GreaterThan,
                     new DateTime(1980, 1, 1).Date,
-                    FilterStatementConnector.And
+                    Connector.And
                 );
                 serializer.Serialize(writer, statement);
                 writer.Flush();
@@ -203,7 +203,7 @@ namespace ExpressionBuilder.Test.Unit
             Assert.That(statement.PropertyId, Is.EqualTo("Id"));
             Assert.That(statement.Operation, Is.EqualTo(Operation.GreaterThanOrEqualTo));
             Assert.That(statement.Value, Is.EqualTo(2));
-            Assert.That(statement.Connector, Is.EqualTo(FilterStatementConnector.Or));
+            Assert.That(statement.Connector, Is.EqualTo(Connector.Or));
         }
 
         [TestCase(TestName = "Deserialize XML into FilterStatement object with enum value")]
@@ -229,7 +229,7 @@ namespace ExpressionBuilder.Test.Unit
             Assert.That(statement.PropertyId, Is.EqualTo("Gender"));
             Assert.That(statement.Operation, Is.EqualTo(Operation.EqualTo));
             Assert.That(statement.Value, Is.EqualTo(PersonGender.Male));
-            Assert.That(statement.Connector, Is.EqualTo(FilterStatementConnector.And));
+            Assert.That(statement.Connector, Is.EqualTo(Connector.And));
         }
 
         [Test]
@@ -247,7 +247,7 @@ namespace ExpressionBuilder.Test.Unit
                 "Gender",
                 Operation.EqualTo,
                 PersonGender.Male,
-                FilterStatementConnector.And
+                Connector.And
             );
             Assert.That(statement.GetSchema(), Is.Null);
         }
