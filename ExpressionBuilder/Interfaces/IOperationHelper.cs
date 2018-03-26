@@ -15,6 +15,7 @@ namespace LambdaExpressionBuilder.Interfaces
         /// <param name="type">Type for which supported operations should be retrieved.</param>
         /// <returns></returns>
         List<Operation> SupportedOperations(Type type);
+
         /// <summary>
         /// Retrieves the exactly number of values acceptable by a specific operation.
         /// </summary>
@@ -22,5 +23,14 @@ namespace LambdaExpressionBuilder.Interfaces
         /// <param name="matchType">See <see cref="Operation" /> for which <see cref="MatchType" /> are allowed.</param>
         /// <returns></returns>
         int NumberOfValuesAcceptable(Operation operation, MatchType matchType);
+        
+        /// <summary>
+        /// Retreives the <see cref="MatchType"/> for the <see cref="Operation"/> provided.
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="matchType"></param>
+        /// <returns></returns>
+        /// <remarks>If <paramref name="matchType"/> is not <see cref="MatchType.Default"/> then it is returned.</remarks>
+        MatchType FetchMatchType(Operation operation, MatchType matchType);
     }
 }

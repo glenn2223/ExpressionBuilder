@@ -1,6 +1,27 @@
 # Change Log
 
-## Version 1.2.1: [CURRENT RELEASE]
+## Version 1.2.2: [CURRENT RELEASE]
+### Summary
+* Added a shorthand function for operations that require no values (i.e. `Operation.IsNull`)
+* Added method to fetch the correct `MatchType`, when default is provided
+* More bug fixes. _When one is solved another is found_
+
+### Changes
+* Added shorthand `FilterStatement` "creation" method for operations that require no values
+* Added method to `OperationHelper` called `FetchMatchType`
+  * This method returns the correct `MatchType` when the provided one is `MatchType.Default`, else it returns the one provided
+  * Implemented this method into `FilterStatements` `ToString()` method
+* Fixed: `NumberOfValuesAcceptable` function should only return `MatchType` modified number when the number of acceptable values is 1. _`Operation.Between` was not being picked up correctly on last update_
+* Fixed: Using `MatchType.Default` now works as expected
+* Fixed: The `MatchType` for the `Filter.By` method is now defaulted to `MatchType.Default`
+
+### Minor Changes (Not Affecting NuGet Package)
+* 'WinForm' changes
+  * Changed the control `UcFilter`'s `MatchType` to default to `MatchType.Default`
+
+---
+
+## Version 1.2.1:
 ### Summary
 **PLEASE NOTE THIS IS A BREAKING CHANGE**
 * **Simplified enumerables** - To make it easier to type, and easier to read, I have simplified 2 enums. _This is the "breaking change" I was refering to._

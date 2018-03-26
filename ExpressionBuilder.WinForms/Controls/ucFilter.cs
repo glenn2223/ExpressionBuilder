@@ -51,7 +51,7 @@ namespace ExpressionBuilder.WinForms.Controls
             get
             {
                 if (cbMatchTypes.Items.Count == 0 || cbMatchTypes.SelectedItem == null)
-                    return MatchType.All;
+                    return MatchType.Default;
                 return (MatchType)Enum.Parse(typeof(MatchType), cbMatchTypes.SelectedItem.ToString());
             }
         }

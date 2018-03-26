@@ -13,8 +13,13 @@ Would this help you in any way? Well, if your answer is 'yes', you just made my 
 * Group expressions for more complex scenarios
 * Match a list of values (i.e. A first name that matches any of: "John", "Jess") [See Documentation](#multi-match-types)
 
-## What's New: Version 1.2.1
-**PLEASE NOTE THIS IS A BREAKING CHANGE**
+## What's New: Version 1.2.2
+* Added a shorthand function for operations that require no values (i.e. `Operation.IsNull`)
+* Added method to fetch the correct `MatchType`, when default is provided
+* More bug fixes. _When one is solved another is found_
+
+## Release Notes About Version 1.2.1
+**PLEASE NOTE THIS IS A BREAKING CHANGE** I have left this in due to the updates being only a day apart
 * **Simplified enumerables** - To make it easier to type, and easier to read, I have simplified 2 enums. _This is the "breaking change" I was refering to._
 * **Operations & default match-types** - Operations now have a default MatchType. This is the match-type that will be called by default.
 * Bug fixes and other minor improvements

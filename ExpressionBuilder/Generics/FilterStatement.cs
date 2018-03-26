@@ -71,6 +71,28 @@ namespace LambdaExpressionBuilder.Generics
         }
 
         /// <summary>
+        /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />. Specific to <see cref="Operation"/>'s that require no values.
+        /// </summary>
+        /// <param name="propertyId"></param>
+        /// <param name="operation"></param>
+        /// <param name="connector"></param>
+        /// <param name="matchType"></param>
+        /// <exception cref="ArgumentException">The <see cref="Operation"/> provided is not valid for this function</exception>
+		public FilterStatement(string propertyId, Operation operation, Connector connector = Connector.And)
+        {
+            if (false == new[] { Operation.IsNull, Operation.IsNotNull, Operation.IsEmpty, Operation.IsNotEmpty, Operation.IsNullOrWhiteSpace, Operation.IsNotNullNorWhiteSpace }.Contains(operation))
+                throw new ArgumentException("The Operation provided is not valid for this function", "operation");
+
+            PropertyId = propertyId;
+            Connector = connector;
+            Operation = operation;
+            Value = null;
+            MatchType = MatchType.Default;
+
+            Validate();
+        }
+
+        /// <summary>
         /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
         /// </summary>
         public FilterStatement() { }
@@ -175,12 +197,14 @@ namespace LambdaExpressionBuilder.Generics
             IEnumerable<string> valueList;
             if (ValueIsList(out valueList))
             {
+                var matchType = new OperationHelper().FetchMatchType(Operation, MatchType);
+
                 if (Operation == Operation.Between)
                     value = string.Join(" AND ", valueList);
                 else if (valueList.Count() == 1)
                     value = valueList.First();
                 else
-                    value = MatchType + " ( \"" + string.Join("\", \"", valueList) + "\" )";
+                    value = matchType + " ( \"" + string.Join("\", \"", valueList) + "\" )";
             }
 
             var operationHelper = new OperationHelper();

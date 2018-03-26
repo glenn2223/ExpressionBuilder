@@ -97,7 +97,7 @@ namespace LambdaExpressionBuilder.Helpers
             if (matchType == MatchType.Default)
                 matchType = attr.DefaultMatchType;
             
-            return attr.NumberOfValues != 0 && (matchType == attr.DefaultMatchType || attr.AllowOtherMatchType) ? -1 : attr.NumberOfValues;
+            return attr.NumberOfValues == 1 && (matchType == attr.DefaultMatchType || attr.AllowOtherMatchType) ? -1 : attr.NumberOfValues;
         }
 
         /// <summary>
@@ -133,6 +133,21 @@ namespace LambdaExpressionBuilder.Helpers
             var attr = FetchAttribute(operation);
 
             return (attr as OperationSettingsAttribute).NumberOfValues;
+        }
+
+        /// <summary>
+        /// Retreives the <see cref="MatchType"/> for the <see cref="Operation"/> provided.
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="matchType"></param>
+        /// <returns></returns>
+        /// <remarks>If <paramref name="matchType"/> is not <see cref="MatchType.Default"/> then it is returned.</remarks>
+        public MatchType FetchMatchType(Operation operation, MatchType matchType)
+        {
+            if (matchType != MatchType.Default)
+                return matchType;
+            
+            return FetchAttribute(operation).DefaultMatchType;
         }
 
         /// <summary>

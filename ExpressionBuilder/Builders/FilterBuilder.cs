@@ -175,7 +175,7 @@ namespace LambdaExpressionBuilder.Builders
         private Expression GetSafeExpression(Expression member, IFilterStatement statement)
         {
             var operation = statement.Operation;
-            var matchType = statement.MatchType;
+            var matchType = new OperationHelper().FetchMatchType(operation, statement.MatchType);
             var constant = GetConstantExpression(member, statement);
 
             if (operation != Operation.Between && statement.ValueIsList())
