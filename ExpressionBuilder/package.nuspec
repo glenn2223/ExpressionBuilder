@@ -10,8 +10,8 @@
     <projectUrl>https://github.com/glenn2223/LambdaExpressionBuilder/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/glenn2223/LambdaExpressionBuilder/Master-2018/ExpressionBuilder/LambdaExpressionBuilder.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.</description>
-    <summary>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.</summary>
+    <description>Easily build filters for use in Lambda Expressions. Make it easy to turn WebApi requests parameters into expressions. Great features such as; save and re-run those filters, make complex expressions and more!</description>
+    <summary>Easily build a filter that you can apply to lists and database queries. You can even use this as a base to allow you to build filters dynamically. Packed with features; you can save and re-run filters, not have to worry about `NULL` checks (it's automatic), build complex queries with groups and more!</summary>
     <copyright>Glenn Marks © 2018</copyright>
     <language>en-GB</language>
     <tags>Expression Builder LINQ Lambda Database IQuery LINQ SQL LINQ2SQL</tags>

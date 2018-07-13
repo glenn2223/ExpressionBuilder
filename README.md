@@ -1,7 +1,9 @@
 # Lambda Expression Builder
-In short words, this library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters. That can be used to help to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.  If you would like more details on how it works, please, check out the article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically).
+**This is not a replacement of [LambdaExpressionBuilder](https://www.nuget.org/packages/LambdaExpressionBuilder/). I've just built on top of it; made changes and improvements (in my opinion)**
 
-Would this help you in any way? Well, if your answer is 'yes', you just made my day a bit better. :smile:
+Are you looking for a library that can build lambda expressions easily? Use the **Lambda Expression Builder** to easily build a filter that you can apply to lists and database queries. You can even use this as a base to allow you to build filters dynamically.
+
+Packed with features; you can save and re-run filters, not have to worry about `NULL` checks (it's automatic), build complex queries with groups and more!
 
 ## Features:
 * Ability to reference properties by their names
