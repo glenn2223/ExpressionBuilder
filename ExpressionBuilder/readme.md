@@ -3,7 +3,7 @@
 
 Are you looking for a library that can build lambda expressions easily? Use the **Lambda Expression Builder** to easily build a filter that you can apply to lists and database queries. You can even use this as a base to allow you to build filters dynamically.
 
-Packed with features; you can save and re-run filters, not have to worry about `NULL` checks (it's automatic), build complex queries with groups and more!
+Packed with features; you can save and re-run filters, not have to worry about NULL checks (it's automatic), build complex queries with groups and more!
 
 ## Features:
 * Ability to reference properties by their names
